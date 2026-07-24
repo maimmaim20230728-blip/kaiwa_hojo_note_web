@@ -1,0 +1,21 @@
+{
+  "accountAssociation": {
+    "header": "TODO_SIGN_WITH_FID_3339315",
+    "payload": "TODO_SIGN_WITH_FID_3339315",
+    "signature": "TODO_SIGN_WITH_FID_3339315"
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "会話補助ノート・そよぎ",
+    "iconUrl": "https://kaiwa-hojo-note-web.vercel.app/icons/icon-512.png",
+    "homeUrl": "https://kaiwa-hojo-note-web.vercel.app/",
+    "imageUrl": "https://kaiwa-hojo-note-web.vercel.app/icons/fc-card-3x2.png",
+    "buttonTitle": "🗒️ ひらく / Open",
+    "splashImageUrl": "https://kaiwa-hojo-note-web.vercel.app/icons/icon-512.png",
+    "splashBackgroundColor": "#2e9e6b",
+    "subtitle": "見せて・さして・つたえるノート",
+    "description": "話す言葉に頼らず、はい/いいえ・体調・写真・数字・文字で気持ちや用事を伝える会話補助ノート。文字の大きさや読み上げなど本人に合わせて調整。完全オフライン・登録なし・広告なし・無料・12言語。",
+    "primaryCategory": "utility",
+    "tags": ["accessibility", "communication", "aphasia", "aac", "soyogi"]
+  }
+}

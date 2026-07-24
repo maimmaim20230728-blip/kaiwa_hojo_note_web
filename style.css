@@ -1,0 +1,163 @@
+/* 会話補助ノート・そよぎ スタイル(v0.1・骨組み)
+   ・そよぎブランド4色(明るい緑/水色/白/黒) = 4テーマ(body data-theme)。そよぎ式スケジューラーと同じ変数構成
+   ・成人の尊厳を保つ落ち着いたトーン(派手な原色・キャラ演出はしない)。装飾目的の色は使わず機能色のみ
+   ・でか文字・大ボタン(44px以上)・.pressing の沈み込み(tap.js連動)・1画面1メッセージ
+   ・カテゴリ画面の中身は各担当が実装するため、ここでは共通の骨組み(見出し・placeholder文)だけを用意する */
+:root{
+  --brand:#2e9e6b;
+  --bg:#f2f7f3;
+  --ink:#1a1a1a;
+  --card:#ffffff;
+  --line:#d7e5da;
+  --sub:#555;
+}
+body[data-theme="aqua"]{ --brand:#2b8fb5; --bg:#eff7fa; --line:#cfe5ee; }
+body[data-theme="white"]{ --brand:#3d8a63; --bg:#ffffff; --card:#f7f9f8; --line:#e2e6e4; }
+body[data-theme="dark"]{
+  --brand:#43c08a; --bg:#191d1b; --card:#242a27; --ink:#f2f2f2; --line:#3a423e; --sub:#b5bdb8;
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body{ margin:0; }
+/* シェルは縦フレックス(ヘッダー=上固定 / 中央=スクロール / 下部ナビ=下固定)。
+   height は 100dvh(ブラウザのバー増減に追従・特大文字fs2でも下端ボタンまで届く)。
+   body 自身はスクロールさせず、中央 #main だけを overflow-y:auto でスクロールする。 */
+body{
+  font-family:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,sans-serif;
+  background:var(--bg); color:var(--ink);
+  line-height:1.6;
+  height:100vh;      /* 古い環境のフォールバック */
+  height:100dvh;     /* 動的ビューポート(対応環境はこちらが優先) */
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;   /* ページ全体はスクロールしない=固定枠。スクロールは #main だけ */
+}
+/* 文字サイズ3段階(せっていで切替・body class) */
+body.fs0{ font-size:18px; }
+body.fs1{ font-size:21px; }
+body.fs2{ font-size:25px; }
+
+header#hd{
+  background:var(--brand); color:#fff;
+  padding:12px 16px; font-weight:700; font-size:19px;   /* 🔴ヘッダーのchrome(タイトル/鍵/言語)は固定サイズ=fs2でも肥大させない(横あふれ防止)。拡大するのは本文=#mainだけ。ラベル+コントロールの縦積みで高さが出る(ヒロ2026-07-25) */
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  flex-shrink:0; overflow:hidden;   /* 上に固定(縮まない)＋横あふれをクリップ */
+}
+#hd-title{ flex:1; min-width:2.5em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#hd-right{ display:flex; align-items:flex-end; gap:16px; flex-shrink:0; }   /* 右側=[説明/🔒]と[Language/セレクト]の2縦積みを下ぞろえ */
+.hd-lock{
+  min-height:40px; min-width:40px; padding:0 8px;
+  border:none; border-radius:8px; background:rgba(255,255,255,.22); color:#fff;
+  font-size:1.15em; font-family:inherit;
+}
+/* 鍵＋その下の案内を縦積み(初見でせっていに辿り着けず積むのを防ぐ。鍵の下=見やすい・ヒロ2026-07-25) */
+#hd-lock-wrap{ display:flex; flex-direction:column; align-items:center; gap:3px; flex-shrink:0; }
+.hd-lock-hint{
+  font-size:.55em; font-weight:700; line-height:1.2; color:#fff;
+  max-width:7.5em; text-align:center; white-space:normal;
+}
+.hd-lock-hint.hidden{ display:none; }
+#lang-wrap{ display:flex; flex-direction:column; align-items:center; gap:3px; flex-shrink:0; }  /* [Language ラベル(常時・英語)]の下に[セレクト] */
+.lang-label{ font-size:.55em; font-weight:700; color:#fff; line-height:1; letter-spacing:.02em; }
+#hd #set-lang{
+  min-height:40px; font-size:.95em; font-family:inherit;
+  border:none; border-radius:8px; padding:2px 6px;
+  background:#fff; color:var(--ink);
+}
+
+/* 中央のコンテンツ領域だけがスクロールする(flex:1 + min-height:0 が必須。
+   min-height:0 が無いとフレックス子が縮まずスクロールしない)。fs2でも下端まで到達できる。 */
+#main{
+  flex:1 1 auto; min-height:0; overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  width:100%; max-width:680px; margin:0 auto; padding:16px;
+}
+.screen.hidden, .hidden{ display:none; }
+.scr-title{ font-size:1.3em; margin:0 0 10px; }
+.sec-h{ font-size:1.05em; margin:24px 0 8px; }
+.hint{ color:var(--sub); font-size:.92em; }
+
+/* ======== ホーム ======== */
+.home-wrap{
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  gap:10px; padding:6vh 8px 4vh;   /* 大ボタンを載せるぶん上の余白を控えめに(ロゴ/名前/タグラインは残す) */
+}
+.home-logo{ font-size:4em; line-height:1; }
+.home-name{ font-size:1.4em; margin:0; }
+.home-tagline{ color:var(--sub); margin:0; }
+.home-welcome{ font-weight:700; margin:18px 0 4px; }
+
+/* ホームの大ボタン(5カテゴリ)。大きなタップ対象・文字サイズ(fs)にemで追従・
+   落ち着いたトーン(枠付きカード・機能色のみ)。ラベルは nav.* を流用。フッターナビと同じ行き先。 */
+.home-cats{
+  width:100%; max-width:440px; margin:8px auto 0;
+  display:flex; flex-direction:column; gap:14px;
+}
+.home-cat-btn{
+  width:100%; min-height:72px; padding:14px 20px;
+  display:flex; align-items:center; gap:16px;
+  border:2px solid var(--brand); background:var(--card); color:var(--ink);
+  border-radius:18px; font-family:inherit; text-align:left;
+}
+.home-cat-ic{ font-size:1.9em; line-height:1; flex:none; width:1.5em; text-align:center; }
+.home-cat-label{ font-size:1.25em; font-weight:700; }
+
+/* ======== カテゴリ画面(共通の骨組み。中身は各担当が実装) ======== */
+.placeholder-screen{
+  min-height:40vh; display:flex; flex-direction:column;
+  align-items:flex-start; justify-content:flex-start;
+}
+.placeholder-note{
+  color:var(--sub); background:var(--card); border:1.5px dashed var(--line);
+  border-radius:12px; padding:14px 16px; width:100%;
+}
+
+/* ======== せってい ======== */
+.lock-row{
+  display:flex; flex-direction:column; gap:10px;
+  padding-bottom:16px; margin-bottom:6px; border-bottom:1px solid var(--line);
+}
+.lock-btn{ align-self:flex-start; min-height:52px; }
+.set-row{
+  display:flex; justify-content:space-between; align-items:center;
+  min-height:56px; gap:12px; border-bottom:1px solid var(--line);
+}
+.set-btn{
+  min-width:120px; min-height:48px; font-size:1em; font-family:inherit;
+  border:2px solid var(--brand); background:var(--card); color:var(--ink);
+  border-radius:10px;
+}
+.ghost-btn{
+  min-height:52px; padding:0 16px; background:var(--card); color:var(--sub);
+  border:2px solid var(--line); border-radius:14px; font-size:1em; font-weight:700; font-family:inherit;
+}
+.bk-row{ display:flex; gap:12px; }
+.bk-row .set-btn{ flex:1; }
+input[type="file"].hidden{ display:none; }
+.credit{ color:var(--sub); margin-top:20px; text-align:center; }
+.credit a{ color:var(--brand); text-decoration:underline; display:inline-block; padding:8px 4px; }
+
+/* ======== ナビ(下部・5カテゴリ固定+せってい(作成モード時のみ)) ======== */
+#navbar{
+  flex-shrink:0; display:flex;   /* 下に固定(縮まない・フレックス末尾)。中身・見た目はそのまま */
+  background:var(--card); border-top:2px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.nav-btn{
+  flex:1; min-height:64px; min-width:44px; border:none; background:none;
+  font-size:.95em; font-weight:700; font-family:inherit; color:var(--sub);
+  border-top:4px solid transparent; padding:4px 2px;
+}
+.nav-btn.active{ color:var(--brand); border-top-color:var(--brand); }
+.nav-btn.hidden{ display:none; }
+
+/* tap.js の押下フィードバック */
+.pressing{ transform:scale(.97); filter:brightness(.94); }
+
+/* トースト */
+.toast{
+  position:fixed; bottom:96px; left:50%; transform:translateX(-50%);
+  background:#333; color:#fff; padding:10px 18px; border-radius:999px;
+  opacity:0; transition:opacity .25s; pointer-events:none; z-index:60; max-width:88%;
+}
+.toast.show{ opacity:1; }
