@@ -1,8 +1,8 @@
 {
   "accountAssociation": {
-    "header": "TODO_SIGN_WITH_FID_3339315",
-    "payload": "TODO_SIGN_WITH_FID_3339315",
-    "signature": "TODO_SIGN_WITH_FID_3339315"
+    "header": "eyJmaWQiOjMzMzkzMTUsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg2RGYyOTIyRjc4OUVmMTFmNjk3NDREMEZkYWZCNDhmN2VhNjRmYTExIn0",
+    "payload": "eyJkb21haW4iOiJrYWl3YS1ob2pvLW5vdGUtd2ViLnZlcmNlbC5hcHAifQ",
+    "signature": "lbxmfBsoMHHWlSGtmNyScUp2jSFCTXuvQJ8Z/mnuEqAlAQDDMoLPDDTchFjLGsdTQuXQO8r+BdJz+z02FI6OLhw="
   },
   "miniapp": {
     "version": "1",
