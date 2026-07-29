@@ -225,14 +225,31 @@
 
       /* ---- よみあげ(せっていで ON のときだけ・声を だしにくい方の「声」) ----
          app.js は画面に TTS を渡さないため、この画面内で ブラウザ標準の音声合成を直接つかう(自己完結)。 */
+      /* Play版(Capacitor)のWebViewはWeb Speech API非対応の端末が多い→端末内蔵TTSへ橋渡し */
+      var NATIVE_TTS = (function(){
+        try{
+          var c = window.Capacitor;
+          if(c && typeof c.isNativePlatform === 'function' && c.isNativePlatform() &&
+             typeof c.registerPlugin === 'function'){ return c.registerPlugin('TextToSpeech'); }
+        }catch(_){}
+        return null;
+      })();
       function speak(){
         try{
           if(!selPart) return;
-          if(typeof window === 'undefined' || !window.speechSynthesis || typeof SpeechSynthesisUtterance === 'undefined') return;
           var txt = api.T('screen.health.parts.' + selPart);
           if(faceIdx != null){ txt += ' ' + api.T('screen.health.level') + ' ' + FACES[faceIdx].n; }
-          var u = new SpeechSynthesisUtterance(txt);
           var tag = (pref.lang === 'ja') ? 'ja-JP' : ((pref.lang === 'en') ? 'en-US' : (pref.lang || 'ja'));
+          if(NATIVE_TTS){
+            var vv0 = [0.6, 0.85, 1][pref.vol];
+            NATIVE_TTS.stop().catch(function(){}).then(function(){
+              NATIVE_TTS.speak({ text: String(txt), lang: String(tag), rate: 1, pitch: 1.0,
+                                 volume: (vv0 == null) ? 1.0 : vv0 }).catch(function(){});
+            });
+            return;
+          }
+          if(typeof window === 'undefined' || !window.speechSynthesis || typeof SpeechSynthesisUtterance === 'undefined') return;
+          var u = new SpeechSynthesisUtterance(txt);
           u.lang = tag;
           /* 🔴端末の既定音声(例:日本語)のままだと対象言語で読まれない対策=対象言語に合う音声を明示選択。
              getVoices()が空(未ロード)の時は従来どおり u.lang のみで読む(例外は出さない)。 */

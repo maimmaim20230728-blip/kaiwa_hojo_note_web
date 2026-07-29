@@ -76,13 +76,29 @@
     ja:'ja-JP', en:'en-US', de:'de-DE', fr:'fr-FR', es:'es-ES', it:'it-IT',
     pt:'pt-PT', nl:'nl-NL', sv:'sv-SE', ko:'ko-KR', zh:'zh-CN', ar:'ar-SA'
   };
+  /* Play版(Capacitor)のWebViewはWeb Speech API非対応の端末が多い→端末内蔵TTSへ橋渡し */
+  var NATIVE_TTS = (function(){
+    try{
+      var c = window.Capacitor;
+      if(c && typeof c.isNativePlatform === 'function' && c.isNativePlatform() &&
+         typeof c.registerPlugin === 'function'){ return c.registerPlugin('TextToSpeech'); }
+    }catch(_){}
+    return null;
+  })();
   function speak(text, lang){
     try{
-      if(!('speechSynthesis' in window) || !text) return;
+      if(!text) return;
+      var tag = TTS_LANG[lang] || 'en-US';
+      if(NATIVE_TTS){
+        NATIVE_TTS.stop().catch(function(){}).then(function(){
+          NATIVE_TTS.speak({ text: String(text), lang: tag, rate: 1, pitch: 1.0, volume: 1.0 }).catch(function(){});
+        });
+        return;
+      }
+      if(!('speechSynthesis' in window)) return;
       var synth = window.speechSynthesis;
       synth.cancel();
       var u = new SpeechSynthesisUtterance(text);
-      var tag = TTS_LANG[lang] || 'en-US';
       u.lang = tag;
       try{                              // 端末既定音声のままだと対象言語で読まれない対策=合う音声を明示選択
         var vs = synth.getVoices() || [];
@@ -96,6 +112,7 @@
     }catch(_){}
   }
   function stopSpeak(){
+    try{ if(NATIVE_TTS) NATIVE_TTS.stop().catch(function(){}); }catch(_){}
     try{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }catch(_){}
   }
 

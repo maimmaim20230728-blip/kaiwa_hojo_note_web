@@ -261,14 +261,33 @@
          まとまりの数(百二十三)ではなく桁読みにするのは、電話番号など桁が意味を持つ場面でも正しく、
          数詞のまとまりに依存しないため。ONのときだけ。相手に声で伝えるための補助であり、
          画面には常に数字“記号”が出ているので、よみあげが無くても機能は成立する。 */
+      /* Play版(Capacitor)のWebViewはWeb Speech API非対応の端末が多い→端末内蔵TTSへ橋渡し */
+      var NATIVE_TTS = (function(){
+        try{
+          var c = window.Capacitor;
+          if(c && typeof c.isNativePlatform === 'function' && c.isNativePlatform() &&
+             typeof c.registerPlugin === 'function'){ return c.registerPlugin('TextToSpeech'); }
+        }catch(_){}
+        return null;
+      })();
       function speakDigits(){
         if(!pref.tts || !digits) return;
+        var tag2 = LOCALE[pref.lang] || 'en-US';
+        var txt2 = digits.split('').join(' ');
+        if(NATIVE_TTS){
+          try{
+            NATIVE_TTS.stop().catch(function(){}).then(function(){
+              NATIVE_TTS.speak({ text: txt2, lang: tag2, rate: 0.85, pitch: 1.0, volume: 1.0 }).catch(function(){});
+            });
+          }catch(_){}
+          return;
+        }
         try{
           if(!('speechSynthesis' in window)) return;
           var synth = window.speechSynthesis;
           synth.cancel();
-          var u = new SpeechSynthesisUtterance(digits.split('').join(' '));
-          var tag = LOCALE[pref.lang] || 'en-US';
+          var u = new SpeechSynthesisUtterance(txt2);
+          var tag = tag2;
           u.lang = tag;
           /* 🔴端末の既定音声(例:日本語)のままだと英数字が英語で読まれない対策=対象言語に合う音声を明示選択 */
           try{

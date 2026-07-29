@@ -54,13 +54,30 @@
   }
 
   /* ---- 読み上げ(TTS・せっていONのときだけ) ---- */
+  /* Play版(Capacitor)のWebViewはWeb Speech API非対応の端末が多い→端末内蔵TTSへ橋渡し */
+  var NATIVE_TTS = (function(){
+    try{
+      var c = window.Capacitor;
+      if(c && typeof c.isNativePlatform === 'function' && c.isNativePlatform() &&
+         typeof c.registerPlugin === 'function'){ return c.registerPlugin('TextToSpeech'); }
+    }catch(_){}
+    return null;
+  })();
   function speak(text, lang){
     if(!text) return;
+    var tag = TTS_LANG[lang] || lang || 'ja-JP';
+    if(NATIVE_TTS){
+      try{
+        NATIVE_TTS.stop().catch(function(){}).then(function(){
+          NATIVE_TTS.speak({ text: String(text), lang: String(tag), rate: 1, pitch: 1.0, volume: 1.0 }).catch(function(){});
+        });
+      }catch(_){}
+      return;
+    }
     if(typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     try{
       var synth = window.speechSynthesis; synth.cancel();
       var u = new SpeechSynthesisUtterance(String(text));
-      var tag = TTS_LANG[lang] || lang || 'ja-JP';
       u.lang = tag;
       /* 🔴端末の既定音声(例:日本語)のままだと対象言語で読まれない対策=対象言語に合う音声を明示選択。
          getVoices()が空(未ロード)の時は従来どおり u.lang のみで読む(例外は出さない)。 */
@@ -74,7 +91,10 @@
       synth.speak(u);
     }catch(_){}
   }
-  function stopSpeak(){ try{ if(typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel(); }catch(_){} }
+  function stopSpeak(){
+    try{ if(NATIVE_TTS) NATIVE_TTS.stop().catch(function(){}); }catch(_){}
+    try{ if(typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel(); }catch(_){}
+  }
 
   /* ---- モード判定(作成モードか) ----
      api には錠の状態が来ないので、共有シェルが出し入れする「せってい」ナビの表示で判定する(DOMは読むだけ)。

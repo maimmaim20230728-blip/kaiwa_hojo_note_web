@@ -145,13 +145,32 @@
   }
 
   /* ===== よみあげ(TTS)。api.pref.tts が ON のときだけ使う ===== */
+  /* Play版(Capacitor)のWebViewはWeb Speech API非対応の端末が多い→端末内蔵TTSへ橋渡し */
+  var NATIVE_TTS = (function(){
+    try{
+      var c = window.Capacitor;
+      if(c && typeof c.isNativePlatform === 'function' && c.isNativePlatform() &&
+         typeof c.registerPlugin === 'function'){ return c.registerPlugin('TextToSpeech'); }
+    }catch(_){}
+    return null;
+  })();
   function ttsSpeak(text, lang, vol){
-    if(!text || !('speechSynthesis' in window)) return;
+    if(!text) return;
+    var tag = TTS_LANG[lang] || 'en-US';
+    if(NATIVE_TTS){
+      try{
+        NATIVE_TTS.stop().catch(function(){}).then(function(){
+          NATIVE_TTS.speak({ text: String(text), lang: tag, rate: 1, pitch: 1.0,
+                             volume: (vol === 0) ? 0.6 : 1.0 }).catch(function(){});
+        });
+      }catch(_){}
+      return;
+    }
+    if(!('speechSynthesis' in window)) return;
     try{
       var synth = window.speechSynthesis;
       synth.cancel();
       var u = new SpeechSynthesisUtterance(text);
-      var tag = TTS_LANG[lang] || 'en-US';
       u.lang = tag;
       /* 🔴端末の既定音声(例:日本語)のままだと対象言語で読まれない対策=対象言語に合う音声を明示選択。
          getVoices()が空(未ロード)の時は従来どおり u.lang のみで読む(例外は出さない)。 */
@@ -189,7 +208,7 @@
       var ja       = (script === 'ja');                               // ja だけ 2次元(五十音図)＋濁点等の特別扱い
       var rtl      = (script === 'ar');                               // ar は盤・見せる欄を右→左に
       var showText = (pref.showText !== false);                        // 文字なし表示のとき補助テキストを隠す
-      var ttsOK    = !!pref.tts && ('speechSynthesis' in window);      // 既定OFF。ONのときだけ よみあげ
+      var ttsOK    = !!pref.tts && (!!NATIVE_TTS || ('speechSynthesis' in window)); // 既定OFF。ONのときだけ よみあげ
 
       function L(k){ var v = api.T('screen.kana.' + k); return (v == null) ? '' : v; }
 
