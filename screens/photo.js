@@ -149,7 +149,8 @@
       /* オーバーレイ */
       '#scr-photo .photo-ov{position:fixed;inset:0;z-index:300;background:var(--bg);color:var(--ink);',
       'display:flex;flex-direction:column;align-items:center;overflow-y:auto;',
-      'padding:20px 16px calc(24px + env(safe-area-inset-bottom));}',
+      /* 上下ともエッジtoエッジ対応(上を固定pxのままにすると「とじる」等が時計と重なる) */
+      'padding:calc(20px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));}',
       '#scr-photo .photo-ov-title{font-size:1.18em;font-weight:700;margin:0 0 6px;text-align:center;}',
       '#scr-photo .photo-ov-hint{color:var(--sub);font-size:.92em;text-align:center;margin:0 0 14px;max-width:22em;}',
       '#scr-photo .photo-big{width:100%;max-width:min(90vw,420px);aspect-ratio:1/1;object-fit:contain;',

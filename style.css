@@ -39,7 +39,9 @@ body.fs2{ font-size:25px; }
 
 header#hd{
   background:var(--brand); color:#fff;
-  padding:12px 16px; font-weight:700; font-size:19px;   /* 🔴ヘッダーのchrome(タイトル/鍵/言語)は固定サイズ=fs2でも肥大させない(横あふれ防止)。拡大するのは本文=#mainだけ。ラベル+コントロールの縦積みで高さが出る(ヒロ2026-07-25) */
+  /* 上の余白に safe-area を足す(エッジtoエッジで画面がステータスバーの下まで描かれるため、
+     固定pxのままだとタイトル/言語セレクトが時計と重なる) */
+  padding:calc(12px + env(safe-area-inset-top)) 16px 12px; font-weight:700; font-size:19px;   /* 🔴ヘッダーのchrome(タイトル/鍵/言語)は固定サイズ=fs2でも肥大させない(横あふれ防止)。拡大するのは本文=#mainだけ。ラベル+コントロールの縦積みで高さが出る(ヒロ2026-07-25) */
   display:flex; align-items:center; justify-content:space-between; gap:14px;
   flex-shrink:0; overflow:hidden;   /* 上に固定(縮まない)＋横あふれをクリップ */
 }
@@ -154,9 +156,11 @@ input[type="file"].hidden{ display:none; }
 /* tap.js の押下フィードバック */
 .pressing{ transform:scale(.97); filter:brightness(.94); }
 
-/* トースト */
+/* トースト
+   🔴 targetSdk36(Android15+)はエッジtoエッジ強制で、画面がナビゲーションバーの下まで描かれる。
+   bottom が固定pxだとその分だけ本来より下寄りに出るため、safe-area を足して位置を合わせる。 */
 .toast{
-  position:fixed; bottom:96px; left:50%; transform:translateX(-50%);
+  position:fixed; bottom:calc(96px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%);
   background:#333; color:#fff; padding:10px 18px; border-radius:999px;
   opacity:0; transition:opacity .25s; pointer-events:none; z-index:60; max-width:88%;
 }

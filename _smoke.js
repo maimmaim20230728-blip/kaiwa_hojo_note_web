@@ -252,6 +252,34 @@ check('ja/enテーブルが両方読める', !!I18.ja && !!I18.en);
 check('5カテゴリぶん screen.* が両言語にある', ['yesno','health','photo','number','kana'].every(id => I18.ja.screen[id] && I18.en.screen[id]));
 check('KAIWA_SCREENSに5画面すべて登録されている', evalCtx('window.KAIWA_SCREENS.ids()').length === 5);
 
+/* ---- [v0.1.4] ステータスバー/ナビゲーションバーに食い込まない(セーフエリア対応) ----
+   targetSdk36(Android15+)はエッジtoエッジ強制で、WebViewが端末のステータスバーの下・
+   ナビゲーションバーの下まで描かれる。固定pxのままだとヘッダーが時計と重なり、
+   トーストはナビバーぶんだけ本来より下寄りに出る。index.html に viewport-fit=cover があるので
+   env(safe-area-inset-*) で足りない分を補う。 */
+console.log('[セーフエリア] 端末のバーに食い込まない');
+const cssTxt = fs.readFileSync(__dirname + '/style.css', 'utf8').replace(/\s+/g, '');
+check('viewport に viewport-fit=cover がある(env()が効く前提)', /viewport-fit=cover/.test(html));
+check('ヘッダーの上余白に env(safe-area-inset-top)(時計と重ならない)',
+  /header#hd\{[^}]*padding:calc\(12px\+env\(safe-area-inset-top\)\)16px12px/.test(cssTxt));
+check('トーストの bottom に env(safe-area-inset-bottom)',
+  /\.toast\{[^}]*bottom:calc\(96px\+env\(safe-area-inset-bottom\)\)/.test(cssTxt));
+check('下ナビの下余白に env(safe-area-inset-bottom)',
+  /#navbar\{[^}]*padding-bottom:env\(safe-area-inset-bottom\)/.test(cssTxt));
+const photoTxt = fs.readFileSync(__dirname + '/screens/photo.js', 'utf8').replace(/\s+/g, '');
+check('しゃしんの全画面オーバーレイが上下ともセーフエリア対応(注入CSSは行分割のため padding 行を見る)',
+  /\.photo-ov\{position:fixed;inset:0;/.test(photoTxt) &&
+  /'padding:calc\(20px\+env\(safe-area-inset-top\)\)16pxcalc\(24px\+env\(safe-area-inset-bottom\)\);\}'/.test(photoTxt));
+/* 版数の取り違え防止(build.gradle=正・アプリ内表示の据え置きを機械で弾く。
+   Web版のフォルダには android/ が無いのでその時だけ飛ばす) */
+const gradlePath = __dirname + '/android/app/build.gradle';
+if(fs.existsSync(gradlePath)){
+  const gradleVer = (fs.readFileSync(gradlePath, 'utf8').match(/versionName\s+"([^"]+)"/) || [])[1];
+  check('build.gradle の versionName とせっていの版表示が一致', byId('about-ver').textContent === 'v' + gradleVer);
+  check('package.json の version も一致',
+    JSON.parse(fs.readFileSync(__dirname + '/package.json', 'utf8')).version === gradleVer);
+}
+
 console.log('');
 if(ng){ console.error('SMOKE NG: ' + ng + '件 失敗 / OK ' + ok + '件'); process.exit(1); }
 console.log('SMOKE OK: 全' + ok + '件 合格');
