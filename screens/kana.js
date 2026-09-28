@@ -149,8 +149,11 @@
   var NATIVE_TTS = (function(){
     try{
       var c = window.Capacitor;
-      if(c && typeof c.isNativePlatform === 'function' && c.isNativePlatform() &&
-         typeof c.registerPlugin === 'function'){ return c.registerPlugin('TextToSpeech'); }
+      if(c && typeof c.isNativePlatform === 'function' && c.isNativePlatform()){
+         /* 🔴 WebView に registerPlugin(@capacitor/core の関数)は無い。ネイティブが入れる Plugins.TextToSpeech を使う(2026-09-28) */
+         var p = c.Plugins && c.Plugins.TextToSpeech;
+         if(p && typeof p.speak === 'function') return p;
+         if(typeof c.registerPlugin === 'function') return c.registerPlugin('TextToSpeech'); }
     }catch(_){}
     return null;
   })();
