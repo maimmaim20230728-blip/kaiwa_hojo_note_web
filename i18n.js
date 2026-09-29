@@ -61,8 +61,14 @@ var ja = {
     exported:'かきだしました ✓',
     imported:'よみこみました ✓',
     importFail:'よみこめませんでした',
+    exportFail:'かきだせませんでした',
     privacy:'プライバシーポリシー',
     credit:'アプリ開発：介護と支援の相談どころ そよぎ'
+  },
+  /* 確かめの窓のボタン(app.js askBox・Play版の戻るボタンで使う・2026-09-30) */
+  common: {
+    yes:'はい',
+    no:'いいえ'
   },
   /* 画面ごとの文言(v0.1で5画面とも本実装。各画面は screen.<id> 配下のみを使う。
      ja(正)と en はキー構造を完全一致させる(_check.js が機械照合)。placeholderは全画面が
@@ -122,7 +128,8 @@ var ja = {
       saved:'ほぞん しました',
       deleted:'けしました',
       storageFull:'きおくが いっぱいで ついか できませんでした',
-      photoFail:'しゃしんを よみこめませんでした'
+      photoFail:'しゃしんを よみこめませんでした',
+      backConfirm:'かいた なまえ・ことばは、まだ ほぞん して いません。やめて もどりますか?'
     },
     number: {
       title:'すうじ・じかん',
@@ -198,8 +205,13 @@ var en = {
     exported:'Exported ✓',
     imported:'Imported ✓',
     importFail:'Could not import',
+    exportFail:'Could not export',
     privacy:'Privacy Policy',
     credit:'App by: Soyogi (Care & Support Consultation)'
+  },
+  common: {
+    yes:'Yes',
+    no:'No'
   },
   screen: {
     yesno: {
@@ -256,7 +268,8 @@ var en = {
       saved:'Saved',
       deleted:'Deleted',
       storageFull:'Storage is full, could not add',
-      photoFail:'Could not load the photo'
+      photoFail:'Could not load the photo',
+      backConfirm:'The name or word you wrote is not saved yet. Cancel and go back?'
     },
     number: {
       title:'Numbers / Time',
@@ -354,8 +367,13 @@ var de = {
     "exported": "Exportiert ✓",
     "imported": "Importiert ✓",
     "importFail": "Import fehlgeschlagen",
+    "exportFail": "Export fehlgeschlagen",
     "privacy": "Datenschutzerklärung",
     "credit": "App von: Soyogi (Beratung für Pflege und Unterstützung)"
+  },
+  "common": {
+    "yes": "Ja",
+    "no": "Nein"
   },
   "screen": {
     "yesno": {
@@ -427,7 +445,8 @@ var de = {
       "saved": "Gespeichert",
       "deleted": "Gelöscht",
       "storageFull": "Speicher voll, konnte nicht hinzufügen",
-      "photoFail": "Foto konnte nicht geladen werden"
+      "photoFail": "Foto konnte nicht geladen werden",
+      "backConfirm": "Der geschriebene Name bzw. das Wort ist noch nicht gespeichert. Abbrechen und zurückgehen?"
     },
     "number": {
       "title": "Zahlen / Zeit",
@@ -528,8 +547,13 @@ var fr = {
     "exported": "Exporté ✓",
     "imported": "Importé ✓",
     "importFail": "Importation impossible",
+    "exportFail": "Exportation impossible",
     "privacy": "Politique de confidentialité",
     "credit": "Application développée par : SOYOGI (Conseil en soins et accompagnement)"
+  },
+  "common": {
+    "yes": "Oui",
+    "no": "Non"
   },
   "screen": {
     "yesno": {
@@ -601,7 +625,8 @@ var fr = {
       "saved": "Enregistré",
       "deleted": "Supprimé",
       "storageFull": "Mémoire pleine, ajout impossible",
-      "photoFail": "Impossible de charger la photo"
+      "photoFail": "Impossible de charger la photo",
+      "backConfirm": "Le nom ou le mot écrit n'est pas encore enregistré. Annuler et revenir en arrière ?"
     },
     "number": {
       "title": "Chiffres / Heure",
@@ -702,8 +727,13 @@ var es = {
     "exported": "Exportado ✓",
     "imported": "Importado ✓",
     "importFail": "No se pudo importar",
+    "exportFail": "No se pudo exportar",
     "privacy": "Política de privacidad",
     "credit": "Aplicación de: SOYOGI (Consultas de Cuidado y Apoyo)"
+  },
+  "common": {
+    "yes": "Sí",
+    "no": "No"
   },
   "screen": {
     "yesno": {
@@ -775,7 +805,8 @@ var es = {
       "saved": "Guardado",
       "deleted": "Borrado",
       "storageFull": "El almacenamiento está lleno, no se pudo añadir",
-      "photoFail": "No se pudo cargar la foto"
+      "photoFail": "No se pudo cargar la foto",
+      "backConfirm": "El nombre o la palabra que escribió aún no se ha guardado. ¿Cancelar y volver?"
     },
     "number": {
       "title": "Números / Hora",
@@ -876,8 +907,13 @@ var it = {
     "exported": "Esportato ✓",
     "imported": "Importato ✓",
     "importFail": "Impossibile importare",
+    "exportFail": "Impossibile esportare",
     "privacy": "Informativa sulla privacy",
     "credit": "App di: SOYOGI (sportello di assistenza e supporto)"
+  },
+  "common": {
+    "yes": "Sì",
+    "no": "No"
   },
   "screen": {
     "yesno": {
@@ -949,7 +985,8 @@ var it = {
       "saved": "Salvato",
       "deleted": "Eliminato",
       "storageFull": "Memoria piena, impossibile aggiungere",
-      "photoFail": "Impossibile caricare la foto"
+      "photoFail": "Impossibile caricare la foto",
+      "backConfirm": "Il nome o la parola scritti non sono ancora salvati. Annullare e tornare indietro?"
     },
     "number": {
       "title": "Numeri / Ora",
@@ -1050,8 +1087,13 @@ var pt = {
     "exported": "Exportado ✓",
     "imported": "Importado ✓",
     "importFail": "Não foi possível importar",
+    "exportFail": "Não foi possível exportar",
     "privacy": "Política de Privacidade",
     "credit": "Aplicativo por: Soyogi (Consultoria de Cuidado e Apoio)"
+  },
+  "common": {
+    "yes": "Sim",
+    "no": "Não"
   },
   "screen": {
     "yesno": {
@@ -1123,7 +1165,8 @@ var pt = {
       "saved": "Salvo",
       "deleted": "Apagado",
       "storageFull": "A memória está cheia, não foi possível adicionar",
-      "photoFail": "Não foi possível carregar a foto"
+      "photoFail": "Não foi possível carregar a foto",
+      "backConfirm": "O nome ou a palavra que você escreveu ainda não foi salvo. Cancelar e voltar?"
     },
     "number": {
       "title": "Números / Hora",
@@ -1224,8 +1267,13 @@ var nl = {
     "exported": "Geëxporteerd ✓",
     "imported": "Geïmporteerd ✓",
     "importFail": "Importeren mislukt",
+    "exportFail": "Exporteren mislukt",
     "privacy": "Privacybeleid",
     "credit": "App door: Soyogi (Zorg- en ondersteuningsadvies)"
+  },
+  "common": {
+    "yes": "Ja",
+    "no": "Nee"
   },
   "screen": {
     "yesno": {
@@ -1297,7 +1345,8 @@ var nl = {
       "saved": "Opgeslagen",
       "deleted": "Verwijderd",
       "storageFull": "Opslag is vol, toevoegen niet gelukt",
-      "photoFail": "Foto laden mislukt"
+      "photoFail": "Foto laden mislukt",
+      "backConfirm": "De geschreven naam of het woord is nog niet opgeslagen. Annuleren en teruggaan?"
     },
     "number": {
       "title": "Cijfers / Tijd",
@@ -1398,8 +1447,13 @@ var sv = {
     "exported": "Exporterat ✓",
     "imported": "Importerat ✓",
     "importFail": "Kunde inte importera",
+    "exportFail": "Kunde inte exportera",
     "privacy": "Integritetspolicy",
     "credit": "App av: Soyogi (Rådgivning för vård och stöd)"
+  },
+  "common": {
+    "yes": "Ja",
+    "no": "Nej"
   },
   "screen": {
     "yesno": {
@@ -1471,7 +1525,8 @@ var sv = {
       "saved": "Sparat",
       "deleted": "Borttaget",
       "storageFull": "Lagringen är full, kunde inte lägga till",
-      "photoFail": "Kunde inte läsa in fotot"
+      "photoFail": "Kunde inte läsa in fotot",
+      "backConfirm": "Namnet eller ordet du skrev är inte sparat än. Vill du avbryta och gå tillbaka?"
     },
     "number": {
       "title": "Siffror / Tid",
@@ -1572,8 +1627,13 @@ var ko = {
     "exported": "내보냈어요 ✓",
     "imported": "불러왔어요 ✓",
     "importFail": "불러오지 못했어요",
+    "exportFail": "내보내지 못했어요",
     "privacy": "개인정보 처리방침",
     "credit": "앱 개발: 돌봄과 지원 상담소 SOYOGI"
+  },
+  "common": {
+    "yes": "예",
+    "no": "아니요"
   },
   "screen": {
     "yesno": {
@@ -1645,7 +1705,8 @@ var ko = {
       "saved": "저장했어요",
       "deleted": "지웠어요",
       "storageFull": "저장 공간이 가득 차서 추가하지 못했어요",
-      "photoFail": "사진을 불러오지 못했어요"
+      "photoFail": "사진을 불러오지 못했어요",
+      "backConfirm": "쓴 이름·낱말이 아직 저장되지 않았어요. 그만두고 돌아갈까요?"
     },
     "number": {
       "title": "숫자 · 시간",
@@ -1746,8 +1807,13 @@ var zh = {
     "exported": "已导出 ✓",
     "imported": "已导入 ✓",
     "importFail": "无法导入",
+    "exportFail": "无法导出",
     "privacy": "隐私政策",
     "credit": "应用开发:介护与支援咨询处 SOYOGI"
+  },
+  "common": {
+    "yes": "是",
+    "no": "否"
   },
   "screen": {
     "yesno": {
@@ -1819,7 +1885,8 @@ var zh = {
       "saved": "已保存",
       "deleted": "已删除",
       "storageFull": "存储空间已满,无法添加",
-      "photoFail": "无法加载照片"
+      "photoFail": "无法加载照片",
+      "backConfirm": "写的名称或词语还没有保存。要取消并返回吗?"
     },
     "number": {
       "title": "数字 / 时间",
@@ -1920,8 +1987,13 @@ var ar = {
     "exported": "تم التصدير ✓",
     "imported": "تم الاستيراد ✓",
     "importFail": "تعذّر الاستيراد",
+    "exportFail": "تعذّر التصدير",
     "privacy": "سياسة الخصوصية",
     "credit": "تطوير التطبيق: SOYOGI (مركز استشارات الرعاية والدعم)"
+  },
+  "common": {
+    "yes": "نعم",
+    "no": "لا"
   },
   "screen": {
     "yesno": {
@@ -1993,7 +2065,8 @@ var ar = {
       "saved": "تم الحفظ",
       "deleted": "تم الحذف",
       "storageFull": "الذاكرة ممتلئة، تعذّرت الإضافة",
-      "photoFail": "تعذّر تحميل الصورة"
+      "photoFail": "تعذّر تحميل الصورة",
+      "backConfirm": "الاسم أو الكلمة التي كتبتها لم تُحفظ بعد. هل تريد الإلغاء والرجوع؟"
     },
     "number": {
       "title": "أرقام / وقت",

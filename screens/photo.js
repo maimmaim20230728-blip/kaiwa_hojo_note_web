@@ -123,6 +123,12 @@
     _overlay = node;
     _container.appendChild(node);
   }
+  /* Android の戻るボタン(Play版だけ・2026-09-30): なまえ・ことばを書きかけ(まだ ほぞん/つくる を押していない)なら、
+     閉じる前に確かめる(確かめの窓は app.js の api.ask = Play版はアプリの中の いいえ/はい)。書いていなければそのまま閉じる */
+  function askIfWritten(written, close){
+    if(!written || !_api || typeof _api.ask !== 'function'){ close(); return; }
+    _api.ask(_api.T('screen.photo.backConfirm'), function(yes){ if(yes) close(); }, true);
+  }
 
   /* ---- CSS(1回だけ注入・接頭辞 photo-・色/フォント/44px規約は style.css の変数を再利用) ---- */
   function injectCss(){
@@ -372,6 +378,7 @@
     row.appendChild(iconBtn('photo-btn primary', '✓', 'screen.photo.make', confirmCrop));
     ov.appendChild(row);
 
+    ov._back = function(){ askIfWritten((lbl.value || '').trim() !== '', closeCrop); };   // 戻るボタン =「✕ やめる」と同じ
     openOverlay(ov);
   }
 
@@ -379,6 +386,10 @@
   function openView(entry){
     var api = _api, create = isCreateMode();
     var ov = elc('div', 'photo-ov photo-view');
+    var inpNow = null;   // なまえ変更の欄(作成モードのとき・戻るボタンの書きかけの確かめに使う)
+    /* 戻るボタン =「↩ とじる」と同じ。なまえ・ことばを書きかえて まだ ほぞん していなければ先に確かめる */
+    function closeView(){ askIfWritten(!!inpNow && (inpNow.value || '').trim() !== (entry.label || '').trim(), closeOverlay); }
+    ov._back = closeView;
 
     var img = elc('img', 'photo-big'); img.src = entry.img || ''; img.alt = entry.label || '';
     ov.appendChild(img);
@@ -416,6 +427,7 @@
       inp.placeholder = api.T('screen.photo.labelPlaceholder');
       inp.setAttribute('aria-label', api.T('screen.photo.labelLabel'));
       edit.appendChild(inp);
+      inpNow = inp; ov._back = closeView;
       var row = elc('div', 'photo-row');
       row.appendChild(iconBtn('photo-btn primary', '💾', 'screen.photo.save', function(){ doRelabel(inp.value); }));
       row.appendChild(iconBtn('photo-btn danger', '🗑', 'screen.photo.del', askDelete));
@@ -433,6 +445,7 @@
     }
     function askDelete(){
       edit.textContent = '';
+      inpNow = null; ov._back = renderEditControls;   // けす確かめの上で戻る =「やめる」(けさない)
       edit.appendChild(elc('p', 'photo-ov-hint', api.T('screen.photo.delConfirm')));  // 押下直後に取消できる(誤タップを恥じさせない)
       var row = elc('div', 'photo-row');
       row.appendChild(iconBtn('photo-btn', '↩', 'screen.photo.delNo', renderEditControls));
@@ -464,6 +477,14 @@
       stopSpeak(); _overlay = null;   // 共有シェルが container を空にして呼ぶ=前回のオーバーレイDOMは既に無い
       build();
       ensureObserver();
+    },
+    /* Android の戻るボタン(Play版だけ・app.js の onBack から・2026-09-30)。
+       大きく見せる画面・とりこみの画面が出ていれば、その画面の「とじる/やめる」と同じ動きで閉じて true(=ここで終わり)。
+       出ていなければ false(=app.js がホームへ) */
+    back: function(){
+      if(!_overlay || !_overlay.parentNode) return false;
+      if(typeof _overlay._back === 'function') _overlay._back(); else closeOverlay();
+      return true;
     }
   });
 

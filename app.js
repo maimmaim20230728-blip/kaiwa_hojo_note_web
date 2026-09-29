@@ -11,7 +11,7 @@
      戻すは せっていの「本人使用モードに もどす」ボタンのみ。起動のたびに施錠から始める。 */
 (function(){
 
-const VER = '0.1.6';
+const VER = '0.1.7';
 const LS_PREF = 'kaiwa.pref.v1';
 
 /* 12言語対応(ja/en + de/fr/es/it/pt/nl/sv/ko/zh/ar)。翻訳テーブルは i18n.js。
@@ -99,7 +99,8 @@ function screenApi(){
     T: T,
     el: el,
     pref: Object.assign({}, pref),   // 読み取り専用スナップショット(画面側で書き換えても保存されない)
-    toast: toast
+    toast: toast,
+    ask: askBox                      // 確かめの窓(2026-09-30)。ask(文, function(はい){...})。Play版はアプリの中の「いいえ / はい」・Web版は confirm
   };
 }
 function renderCategory(id){
@@ -208,17 +209,132 @@ function applyAll(){
   applyI18n();
 }
 
+/* ---- Play版(Capacitor)だけで使う部品(2026-09-30・キットの templates/app.js と同じ考え方) ----
+   🔴 プラグインはネイティブが入れる Capacitor.Plugins.X を使う(registerPlugin は @capacitor/core の関数で WebView には無い)。
+   Web版(ブラウザ)では isNativeApp() が false なので、どれも動かない */
+function isNativeApp(){
+  try{ const c = window.Capacitor; return !!(c && typeof c.isNativePlatform === 'function' && c.isNativePlatform()); }catch(_){ return false; }
+}
+function nativePlugin(name, fn){
+  try{
+    const c = window.Capacitor;
+    if(typeof c.isPluginAvailable === 'function' && !c.isPluginAvailable(name)) return null;
+    const p = c.Plugins && c.Plugins[name];
+    return (p && typeof p[fn] === 'function') ? p : null;
+  }catch(_){ return null; }
+}
+
+/* ---- Play版のファイル保存(2026-09-30) ----
+   Capacitor 8 の WebView には DownloadListener が無く、<a download> では何も保存されない(なのに「かきだしました」と出ていた)。
+   端末の一時フォルダ(CACHE)に書いてから Android の共有の画面を出し、保存先は利用者が選ぶ。
+   done('ok')=送り先を選べた / done('quiet')=共有の画面を閉じた(何も出さない) / done('fail')=書けない・共有できない・プラグインが無い */
+function shareQuiet(err){
+  const m = String((err && (err.message || err.errorMessage)) || err || '');
+  return !!err && (err.name === 'AbortError' || /cancel|in progress/i.test(m));
+}
+function nativeSaveFile(name, data, label, done){
+  const fsp = nativePlugin('Filesystem', 'writeFile'), shp = nativePlugin('Share', 'share');
+  if(!fsp || !shp){ done('fail'); return; }
+  let w;
+  try{ w = fsp.writeFile({ path:name, data:data, directory:'CACHE', encoding:'utf8' }); }catch(_){ done('fail'); return; }
+  if(!w || typeof w.then !== 'function'){ done('fail'); return; }
+  w.then(r => {
+    if(!r || !r.uri){ done('fail'); return; }
+    let s;
+    try{ s = shp.share({ title:name, files:[r.uri], dialogTitle:label }); }catch(err){ done(shareQuiet(err) ? 'quiet' : 'fail'); return; }
+    if(s && typeof s.then === 'function') s.then(() => done('ok'), err => done(shareQuiet(err) ? 'quiet' : 'fail'));
+    else done('ok');
+  }, () => done('fail'));
+}
+
+/* ---- アプリの中の確かめの窓(2026-09-30) ----
+   Play版の window.confirm は、Capacitor(BridgeWebChromeClient)がボタンを英語の OK / Cancel に決め打ちしている。
+   Play版はアプリの中に「いいえ / はい」(common.no / common.yes・12言語・もじの大きさの設定どおり)の窓を出す。
+   Web版は window.confirm(ブラウザの言葉で出る)。confirm の無い環境(疑似DOMのスモーク)は dflt。
+   いまは しゃしんの「なまえ・ことば」を書きかけで戻るボタンを押したときだけ使う(screens/photo.js が api.ask で呼ぶ)。
+   done(true=はい / false=いいえ)。戻るボタン=いいえ */
+function askBox(msg, done, dflt){
+  if(!isNativeApp()){
+    let r = !!dflt;
+    try{ if(typeof window.confirm === 'function') r = !!window.confirm(msg); }catch(_){ r = false; }
+    done(r);
+    return;
+  }
+  const ov = el('div', 'ask-ov');
+  ov.setAttribute('role', 'alertdialog');
+  ov.setAttribute('aria-modal', 'true');
+  const box = el('div', 'ask-box');
+  const row = el('div', 'ask-row');
+  const no = el('button', 'ask-btn ask-no', T('common.no'));
+  const yes = el('button', 'ask-btn ask-yes', T('common.yes'));
+  no.type = 'button'; yes.type = 'button';
+  no.setAttribute('data-back', '1');
+  let closed = false;
+  function close(v){ if(closed) return; closed = true; if(ov.parentNode) ov.parentNode.removeChild(ov); done(v); }
+  ov._back = () => close(false);
+  Tap.bind(no, () => close(false));
+  Tap.bind(yes, () => close(true));
+  /* TalkBack などは click だけを出すので、この窓のボタンは click も受ける(二重に来ても close は1回だけ) */
+  no.addEventListener('click', () => close(false));
+  yes.addEventListener('click', () => close(true));
+  row.appendChild(no); row.appendChild(yes);
+  box.appendChild(el('p', 'ask-msg', msg)); box.appendChild(row); ov.appendChild(box);
+  document.body.appendChild(ov);
+  try{ no.focus(); }catch(_){}
+}
+
+/* ---- Android の戻るボタン(Play版だけ・2026-09-30) ----
+   @capacitor/app が無いと、戻るでアプリごと後ろに下がっていた(Android 11 以前は閉じる)。
+   押したときの順: ①確かめの窓が出ていれば「いいえ」
+                  ②画面のモジュールが back(api) を持ち true を返したら、それで終わり
+                    (しゃしん: 大きく見せる画面・とりこみ(トリミング)の画面を、その画面の「とじる/やめる」と同じ動きで閉じる。
+                     けす確かめの上では「やめる」。なまえ・ことばを書きかけなら先に確かめる)
+                  ③ホーム以外(5カテゴリ・せってい)→ ホーム(ヘッダーの名前タップと同じ)
+                  ④ホーム → アプリを後ろに下げる(minimizeApp。中身はそのまま)
+   はい・いいえ/たいちょう/すうじ/ことば の画面は、戻る=ホーム(下のナビでほかの画面へ行くのと同じ扱い。
+     ことばの ならべた字・すうじ は今までどおり次に開いても残る。確かめは出さない)。
+   Web版(ブラウザ)は何も変えない(戻るはブラウザのまま) */
+function minimizeApp(){
+  const ap = nativePlugin('App', 'minimizeApp');
+  try{ if(ap){ const p = ap.minimizeApp(); if(p && p.catch) p.catch(() => {}); } }catch(_){}
+}
+function onBack(){
+  const ask = document.querySelector('.ask-ov');
+  if(ask && typeof ask._back === 'function'){ ask._back(); return; }
+  const mod = (CATS.indexOf(currentScreen) >= 0 && window.KAIWA_SCREENS) ? window.KAIWA_SCREENS.get(currentScreen) : null;
+  if(mod && typeof mod.back === 'function'){
+    try{ if(mod.back(screenApi()) === true) return; }catch(err){ console.error('back error:', currentScreen, err); }
+  }
+  if(currentScreen !== 'home'){ showScreen('home'); return; }
+  minimizeApp();
+}
+function watchBack(){
+  if(!isNativeApp()) return;
+  const ap = nativePlugin('App', 'addListener');
+  if(!ap) return;
+  try{ ap.addListener('backButton', () => onBack()); }catch(_){}
+}
+
 /* ---- 機種変更(バックアップ) ----
    v0.1骨組みはせってい値のみ。写真辞書(kaiwa.dict.v1)・ことば上書き(kaiwa.labels.v1)は
    後続フェーズで各データが実装され次第、ここに追加する(SPEC_V1のデータ節を参照) */
 function exportBackup(){
   const data = { app:'kaiwa_hojo_note', ver:1, prefs: pref };
+  const d = new Date();
+  const fname = 'kaiwa-hojo-note-' + d.getFullYear() +
+    String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.json';
+  /* Play版(2026-09-30): 一時フォルダに書いて共有の画面へ。選べたら「かきだしました」・閉じたら何も出さない・書けなければ「かきだせませんでした」 */
+  if(isNativeApp()){
+    nativeSaveFile(fname, JSON.stringify(data), T('set.bkExport'), r => {
+      if(r === 'ok') toast(T('set.exported'));
+      else if(r === 'fail') toast(T('set.exportFail'));
+    });
+    return;
+  }
   const blob = new Blob([JSON.stringify(data)], { type:'application/json' });
   const a = document.createElement('a');
-  const d = new Date();
   a.href = URL.createObjectURL(blob);
-  a.download = 'kaiwa-hojo-note-' + d.getFullYear() +
-    String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.json';
+  a.download = fname;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 3000);
   toast(T('set.exported'));
@@ -296,6 +412,7 @@ function init(){
   applyAll();
   showScreen('home');
   applyLock();
+  watchBack();         // Android の戻るボタン(Play版だけ)
 
   /* Service Worker: 本番(https)だけ登録。localhost(開発)ではSWを使わず、
      既存の登録とキャッシュを消す = 更新しても「前の版」が出続ける問題を防ぐ(そよぎAAC/スケジューラー方式) */
