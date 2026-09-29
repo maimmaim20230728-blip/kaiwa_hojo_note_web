@@ -152,6 +152,34 @@ var ja = {
       cleared:'ぜんぶ けしました。「もどす」で もどせます',
       restored:'もどしました'
     }
+  },
+  /* はじめての つかいかた(app.js openGuide・初回に必ず出す・2026-09-30)。heads と bodies は同じ数。{n} は app.js が作成モードに はいる タップの回数に置きかえる。
+     ボタン名・画面名は その言語の画面の文字と同じにする(画面の文言を変えたら ここも)。🔒 は隠れた入口では無い(ヘッダーに いつも見えている)=せっていから もう一度 見られる */
+  "guide": {
+    "title": "つかいかた",
+    "step": "{n} / {m}",
+    "start": "はじめる",
+    "again": "もういちど 見る",
+    "prev": "まえ",
+    "next": "つぎ",
+    "heads": [
+      "会話補助ノート・そよぎ へ ようこそ",
+      "「はい・いいえ」と「たいちょう・いたみ」",
+      "「ひと・しゃしん」",
+      "「すうじ・じかん」と「ことば」",
+      "作成モードと 本人使用モード",
+      "しゃしんと せっていは この 端末の 中だけ",
+      "見やすく する・もう一度 見る"
+    ],
+    "bodies": [
+      "この アプリは、ことばが でにくい ときに、みせる・さす・えらぶ で 気もちや ようすを つたえる ための ノートです。\n本人と、かぞく・かいごの ひとが いっしょに つかえます。\nホームの 大きな ボタンか、したの ボタンから えらびます。上の 名前を おすと、いつでも ホームに もどれます。",
+      "「はい・いいえ」では、「はい」「いいえ」「わからない」の 大きな ボタンで こたえます。まちがえたら「とりけす」を おします。\n「たいちょう・いたみ」では、からだの ず(「まえ」「うしろ」)で ばしょを さわり、「どのくらい」を かおの めやすと すうじ 0〜10 で えらびます。「はじめから」で やりなおせます。",
+      "かぞくの かお・ばしょ・たべもの などの しゃしんを、「ひと」「ばしょ」「たべもの」「すること」「ほしいもの」に わけて ならべます。しゃしんを おすと 大きく 出ます。\nしゃしんを ふやすのは 作成モードの ときだけです。「カメラで とる」か「アルバムから えらぶ」で とりこみ、いちを あわせて「なまえ・ことば」を 書き、「これで つくる」を おします。",
+      "「すうじ・じかん」では、いまの 時こくが 大きく 出ます。すうじを おすと 上に ならびます。なおす ときは「1つ けす」「ぜんぶ けす」を おします。\n「ことば」では、もじを 1つずつ えらんで 上に ならべ、それを 見せます。「1もじ けす」「ぜんぶ けす」で なおせます。「ぜんぶ けす」の すぐ あとなら「もどす」で もとに もどせます。",
+      "ふだんは 本人使用モードで、「せってい」は かくれています(本人が まちがえて かえない ため)。\n右上の 🔒 を つづけて {n}かい おすと 作成モードに なり、したに「せってい」が 出ます。しゃしんの ついか・なまえの へんこう・けす も 作成モードで します。\nおわったら「せってい」の「🔒 本人使用モードに もどす」を おします。アプリを ひらき なおしても 本人使用モードから はじまります。",
+      "しゃしんや せっていは この 端末の 中だけに ほぞんされ、どこにも 送られません。登録も いりません。\nスマホを かえる ときは、「せってい」の「かきだす」で ファイルを のこし、あたらしい スマホで「よみこむ」を おします。うつせるのは せってい だけで、しゃしんは ふくまれません。",
+      "作成モードの「せってい」で、「もじの大きさ」「カードの文字」(OFF で 絵だけに なる)「よみあげ」(はじめは OFF)「見えにくい側」「いろ」「BGM」「おとの おおきさ」を かえられます。\nことばは 右上の「Language」で えらべます。\nこの 案内は「せってい」の「つかいかた」の「もういちど 見る」で、いつでも もう一度 見られます。"
+    ]
   }
 };
 
@@ -292,6 +320,32 @@ var en = {
       cleared:'Cleared. Tap "Undo" to bring it back.',
       restored:'Restored'
     }
+  },
+  "guide": {
+    "title": "How to use",
+    "step": "{n} / {m}",
+    "start": "Start",
+    "again": "Show again",
+    "prev": "Previous",
+    "next": "Next",
+    "heads": [
+      "Welcome to Soyogi Conversation Notes",
+      "\"Yes / No\" and \"Condition / Pain\"",
+      "\"People / Photos\"",
+      "\"Numbers / Time\" and \"Words\"",
+      "Creation mode and use mode",
+      "Photos and settings stay on this device",
+      "Make it easier to see, and see this again"
+    ],
+    "bodies": [
+      "This app is a notebook for sharing feelings and how you are by showing, pointing and choosing, when words are hard to get out.\nThe person and their family or caregivers can use it together.\nChoose from the big buttons on Home or the buttons at the bottom. Tap the name at the top to go back to Home at any time.",
+      "In \"Yes / No\", answer with the big \"Yes\", \"No\" or \"Not sure\" buttons. If you pick the wrong one, tap \"Cancel\".\nIn \"Condition / Pain\", touch the place on the body picture (\"Front\" or \"Back\"), then choose \"How much\" with the faces and the numbers 0 to 10. \"Start over\" lets you try again.",
+      "Arrange photos of family, places, food and more under \"People\", \"Places\", \"Food\", \"Activities\" and \"Wants\". Tap a photo to see it large.\nPhotos can be added only in creation mode. Use \"Take a photo\" or \"Choose from album\", fit the photo, write the \"Name / word\", and tap \"Create\".",
+      "\"Numbers / Time\" shows the current time in large numbers. Tap numbers and they line up above. To fix them, tap \"Delete one\" or \"Clear all\".\nIn \"Words\", choose letters one at a time; they line up above so you can show them. Fix them with \"Delete one\" or \"Clear all\". Right after \"Clear all\", \"Undo\" brings them back.",
+      "Usually the app is in use mode, and \"Settings\" is hidden (so the person does not change it by mistake).\nTap 🔒 at the top right {n} times in a row to enter creation mode; \"Settings\" then appears at the bottom. Adding photos, renaming and deleting are also done in creation mode.\nWhen you are done, tap \"🔒 Back to use mode\" in \"Settings\". The app also starts in use mode every time you open it.",
+      "Photos and settings are stored only on this device. Nothing is sent anywhere, and no sign-up is needed.\nWhen you change phones, tap \"Export\" in \"Settings\" to save a file, then tap \"Import\" on the new phone. Only the settings are moved; photos are not included.",
+      "In \"Settings\" (creation mode), you can change \"Text size\", \"Card text\" (OFF shows pictures only), \"Read aloud\" (OFF at first), \"Harder-to-see side\", \"Color\", \"Music\" and \"Volume\".\nChoose the language with \"Language\" at the top right.\nYou can see this guide again at any time with \"Show again\" next to \"How to use\" in \"Settings\"."
+    ]
   }
 };
 
@@ -472,6 +526,32 @@ var de = {
       "cleared": "Alles gelöscht. Mit „Rückgängig“ zurückholen.",
       "restored": "Wiederhergestellt"
     }
+  },
+  "guide": {
+    "title": "Anleitung",
+    "step": "{n} / {m}",
+    "start": "Loslegen",
+    "again": "Noch einmal ansehen",
+    "prev": "Vorherige",
+    "next": "Weiter",
+    "heads": [
+      "Willkommen bei Soyogi Gesprächsnotizen",
+      "„Ja / Nein“ und „Befinden / Schmerz“",
+      "„Menschen / Fotos“",
+      "„Zahlen / Zeit“ und „Wörter“",
+      "Bearbeitungsmodus und Nutzungsmodus",
+      "Fotos und Einstellungen bleiben auf diesem Gerät",
+      "Besser sichtbar machen und erneut ansehen"
+    ],
+    "bodies": [
+      "Diese App ist ein Heft, mit dem man durch Zeigen, Deuten und Auswählen Gefühle und Befinden mitteilen kann, wenn Worte schwer über die Lippen kommen.\nDie Person selbst und Angehörige oder Pflegepersonen können es gemeinsam nutzen.\nWählen Sie über die großen Tasten auf der Startseite oder die Tasten unten. Ein Tipp auf den Namen oben führt jederzeit zurück zur Startseite.",
+      "Bei „Ja / Nein“ antworten Sie mit den großen Tasten „Ja“, „Nein“ oder „Weiß nicht“. Bei einem Versehen tippen Sie auf „Zurücknehmen“.\nBei „Befinden / Schmerz“ berühren Sie die Stelle auf dem Körperbild („Vorne“ oder „Hinten“) und wählen dann „Wie stark“ mit den Gesichtern und den Zahlen 0 bis 10. Mit „Von vorn“ fangen Sie neu an.",
+      "Ordnen Sie Fotos von Familie, Orten, Essen und mehr unter „Menschen“, „Orte“, „Essen“, „Aktivitäten“ und „Wünsche“ ein. Ein Tipp auf ein Foto zeigt es groß.\nFotos hinzufügen geht nur im Bearbeitungsmodus. Mit „Foto aufnehmen“ oder „Aus dem Album wählen“ übernehmen, das Foto ausrichten, „Name / Wort“ eintragen und auf „Erstellen“ tippen.",
+      "„Zahlen / Zeit“ zeigt die aktuelle Uhrzeit groß an. Getippte Zahlen reihen sich oben auf. Zum Korrigieren gibt es „Eine löschen“ und „Alle löschen“.\nBei „Wörter“ wählen Sie Buchstaben einzeln; sie reihen sich oben auf, sodass Sie sie zeigen können. Zum Korrigieren gibt es „Einen löschen“ und „Alle löschen“. Direkt nach „Alle löschen“ holt „Rückgängig“ alles zurück.",
+      "Normalerweise ist der Nutzungsmodus an, und die „Einstellungen“ sind ausgeblendet (damit die Person sie nicht aus Versehen ändert).\nTippen Sie {n}-mal hintereinander auf 🔒 oben rechts, um in den Bearbeitungsmodus zu wechseln; unten erscheinen dann die „Einstellungen“. Fotos hinzufügen, umbenennen und löschen geht ebenfalls im Bearbeitungsmodus.\nWenn Sie fertig sind, tippen Sie in den „Einstellungen“ auf „🔒 Zurück zum Nutzungsmodus“. Beim Öffnen startet die App außerdem immer im Nutzungsmodus.",
+      "Fotos und Einstellungen werden nur auf diesem Gerät gespeichert. Nichts wird gesendet, und eine Anmeldung ist nicht nötig.\nBeim Handywechsel tippen Sie in den „Einstellungen“ auf „Exportieren“, um eine Datei zu speichern, und auf dem neuen Handy auf „Importieren“. Übertragen werden nur die Einstellungen, Fotos sind nicht enthalten.",
+      "In den „Einstellungen“ (Bearbeitungsmodus) ändern Sie „Schriftgröße“, „Kartentext“ (AUS zeigt nur Bilder), „Vorlesen“ (anfangs AUS), „Schlechter sichtbare Seite“, „Farbe“, „Musik“ und „Lautstärke“.\nDie Sprache wählen Sie oben rechts unter „Language“.\nDiese Anleitung können Sie jederzeit mit „Noch einmal ansehen“ bei „Anleitung“ in den „Einstellungen“ erneut ansehen."
+    ]
   }
 };
 
@@ -652,6 +732,32 @@ var fr = {
       "cleared": "Tout effacé. Appuyez sur « Annuler » pour rétablir.",
       "restored": "Rétabli"
     }
+  },
+  "guide": {
+    "title": "Mode d'emploi",
+    "step": "{n} / {m}",
+    "start": "Commencer",
+    "again": "Revoir",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "heads": [
+      "Bienvenue dans Carnet de conversation SOYOGI",
+      "« Oui / Non » et « État / Douleur »",
+      "« Personnes / Photos »",
+      "« Chiffres / Heure » et « Mots »",
+      "Mode création et mode utilisation",
+      "Photos et réglages restent sur cet appareil",
+      "Mieux voir et revoir ce guide"
+    ],
+    "bodies": [
+      "Cette application est un carnet pour exprimer ses sentiments et son état en montrant, en désignant et en choisissant, quand les mots ont du mal à sortir.\nLa personne et ses proches ou aidants peuvent l'utiliser ensemble.\nChoisissez avec les grands boutons de l'accueil ou les boutons du bas. Touchez le nom en haut pour revenir à l'accueil à tout moment.",
+      "Dans « Oui / Non », répondez avec les grands boutons « Oui », « Non » ou « Je ne sais pas ». En cas d'erreur, touchez « Annuler ».\nDans « État / Douleur », touchez l'endroit sur le dessin du corps (« Devant » ou « Derrière »), puis choisissez « À quel point » avec les visages et les chiffres de 0 à 10. « Recommencer » permet de reprendre.",
+      "Rangez des photos de la famille, de lieux, de nourriture, etc. dans « Personnes », « Lieux », « Nourriture », « Activités » et « Envies ». Touchez une photo pour l'afficher en grand.\nOn ne peut ajouter des photos qu'en mode création. Utilisez « Prendre une photo » ou « Choisir dans l'album », ajustez la photo, écrivez le « Nom / mot », puis touchez « Créer ».",
+      "« Chiffres / Heure » affiche l'heure actuelle en grand. Les chiffres touchés s'alignent en haut. Pour corriger, utilisez « Effacer un » ou « Tout effacer ».\nDans « Mots », choisissez les lettres une à une ; elles s'alignent en haut pour que vous puissiez les montrer. Pour corriger, utilisez « Effacer une lettre » ou « Tout effacer ». Juste après « Tout effacer », « Annuler » les fait revenir.",
+      "D'habitude, l'application est en mode utilisation et les « Réglages » sont masqués (pour que la personne ne les change pas par erreur).\nTouchez {n} fois de suite 🔒 en haut à droite pour passer en mode création ; les « Réglages » apparaissent alors en bas. Ajouter des photos, les renommer ou les supprimer se fait aussi en mode création.\nQuand vous avez fini, touchez « 🔒 Revenir au mode utilisation » dans « Réglages ». L'application démarre aussi toujours en mode utilisation.",
+      "Les photos et les réglages sont enregistrés uniquement sur cet appareil. Rien n'est envoyé, et aucune inscription n'est nécessaire.\nPour changer de téléphone, touchez « Exporter » dans « Réglages » pour enregistrer un fichier, puis « Importer » sur le nouveau téléphone. Seuls les réglages sont transférés ; les photos ne sont pas incluses.",
+      "Dans « Réglages » (mode création), vous pouvez changer « Taille du texte », « Texte des cartes » (OFF n'affiche que les images), « Lecture vocale » (OFF au départ), « Côté difficile à voir », « Couleur », « Musique » et « Volume ».\nChoisissez la langue avec « Language » en haut à droite.\nVous pouvez revoir ce guide à tout moment avec « Revoir », à la ligne « Mode d'emploi » des « Réglages »."
+    ]
   }
 };
 
@@ -832,6 +938,32 @@ var es = {
       "cleared": "Todo borrado. Toque «Deshacer» para recuperarlo.",
       "restored": "Restaurado"
     }
+  },
+  "guide": {
+    "title": "Cómo se usa",
+    "step": "{n} / {m}",
+    "start": "Empezar",
+    "again": "Ver de nuevo",
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "heads": [
+      "Le damos la bienvenida a Notas de conversación SOYOGI",
+      "«Sí / No» y «Estado / Dolor»",
+      "«Personas / Fotos»",
+      "«Números / Hora» y «Palabras»",
+      "Modo de edición y modo de uso",
+      "Las fotos y los ajustes se quedan en este dispositivo",
+      "Verlo mejor y volver a ver esta guía"
+    ],
+    "bodies": [
+      "Esta app es un cuaderno para comunicar sentimientos y cómo se está, mostrando, señalando y eligiendo, cuando cuesta que salgan las palabras.\nLa persona y su familia o cuidadores pueden usarla juntos.\nElija con los botones grandes de la pantalla de inicio o con los botones de abajo. Toque el nombre de arriba para volver al inicio en cualquier momento.",
+      "En «Sí / No», responda con los botones grandes «Sí», «No» o «No lo sé». Si se equivoca, toque «Cancelar».\nEn «Estado / Dolor», toque el lugar en el dibujo del cuerpo («Delante» o «Detrás») y luego elija «Cuánto» con las caras y los números del 0 al 10. «Empezar de nuevo» permite repetir.",
+      "Ordene fotos de la familia, lugares, comida y más en «Personas», «Lugares», «Comida», «Actividades» y «Deseos». Toque una foto para verla en grande.\nSolo se pueden añadir fotos en el modo de edición. Use «Hacer una foto» o «Elegir del álbum», ajuste la foto, escriba el «Nombre / palabra» y toque «Crear».",
+      "«Números / Hora» muestra la hora actual en grande. Los números que toca se alinean arriba. Para corregir, use «Borrar uno» o «Borrar todo».\nEn «Palabras», elija las letras de una en una; se alinean arriba para que pueda mostrarlas. Para corregir, use «Borrar una» o «Borrar todo». Justo después de «Borrar todo», «Deshacer» las recupera.",
+      "Normalmente la app está en modo de uso y los «Ajustes» están ocultos (para que la persona no los cambie por error).\nToque 🔒 arriba a la derecha {n} veces seguidas para entrar en el modo de edición; entonces aparecen los «Ajustes» abajo. Añadir fotos, cambiarles el nombre y borrarlas también se hace en el modo de edición.\nCuando termine, toque «🔒 Volver al modo de uso» en «Ajustes». Además, la app siempre empieza en modo de uso al abrirla.",
+      "Las fotos y los ajustes se guardan solo en este dispositivo. No se envía nada y no hace falta registrarse.\nAl cambiar de teléfono, toque «Exportar» en «Ajustes» para guardar un archivo y luego «Importar» en el teléfono nuevo. Solo se trasladan los ajustes; las fotos no se incluyen.",
+      "En «Ajustes» (modo de edición) puede cambiar «Tamaño del texto», «Texto de las tarjetas» (en OFF solo se ven imágenes), «Lectura en voz alta» (en OFF al principio), «Lado difícil de ver», «Color», «Música» y «Volumen».\nElija el idioma con «Language», arriba a la derecha.\nPuede volver a ver esta guía cuando quiera con «Ver de nuevo», junto a «Cómo se usa» en «Ajustes»."
+    ]
   }
 };
 
@@ -1012,6 +1144,32 @@ var it = {
       "cleared": "Tutto cancellato. Tocca \"Annulla\" per ripristinare.",
       "restored": "Ripristinato"
     }
+  },
+  "guide": {
+    "title": "Come si usa",
+    "step": "{n} / {m}",
+    "start": "Inizia",
+    "again": "Rivedi",
+    "prev": "Prima",
+    "next": "Avanti",
+    "heads": [
+      "Ti diamo il benvenuto in Note di conversazione SOYOGI",
+      "\"Sì / No\" e \"Condizione / Dolore\"",
+      "\"Persone / Foto\"",
+      "\"Numeri / Ora\" e \"Parole\"",
+      "Modalità creazione e modalità uso",
+      "Foto e impostazioni restano su questo dispositivo",
+      "Vedere meglio e rivedere questa guida"
+    ],
+    "bodies": [
+      "Questa app è un quaderno per comunicare sentimenti e condizioni mostrando, indicando e scegliendo, quando le parole faticano a uscire.\nLa persona e i familiari o chi la assiste possono usarla insieme.\nScegli con i pulsanti grandi della schermata iniziale o con quelli in basso. Toccando il nome in alto torni alla schermata iniziale in qualsiasi momento.",
+      "In \"Sì / No\" rispondi con i grandi pulsanti \"Sì\", \"No\" o \"Non so\". Se sbagli, tocca \"Annulla\".\nIn \"Condizione / Dolore\" tocca il punto sul disegno del corpo (\"Davanti\" o \"Dietro\"), poi scegli \"Quanto\" con i volti e i numeri da 0 a 10. \"Ricomincia\" permette di rifare.",
+      "Ordina le foto di familiari, luoghi, cibo e altro in \"Persone\", \"Luoghi\", \"Cibo\", \"Attività\" e \"Desideri\". Tocca una foto per vederla in grande.\nLe foto si aggiungono solo in modalità creazione. Usa \"Scatta una foto\" o \"Scegli dall'album\", sistema la foto, scrivi il \"Nome / parola\" e tocca \"Crea\".",
+      "\"Numeri / Ora\" mostra l'ora attuale in grande. I numeri toccati si mettono in fila in alto. Per correggere usa \"Elimina uno\" o \"Cancella tutto\".\nIn \"Parole\" scegli le lettere una a una; si mettono in fila in alto così puoi mostrarle. Per correggere usa \"Elimina una lettera\" o \"Cancella tutto\". Subito dopo \"Cancella tutto\", \"Annulla\" le riporta.",
+      "Di solito l'app è in modalità uso e le \"Impostazioni\" sono nascoste (così la persona non le cambia per errore).\nTocca 🔒 in alto a destra {n} volte di seguito per entrare in modalità creazione; in basso compaiono allora le \"Impostazioni\". Anche aggiungere foto, rinominarle ed eliminarle si fa in modalità creazione.\nQuando hai finito, tocca \"🔒 Torna alla modalità uso\" in \"Impostazioni\". Inoltre l'app parte sempre in modalità uso quando la apri.",
+      "Foto e impostazioni vengono salvate solo su questo dispositivo. Non viene inviato nulla e non serve registrarsi.\nQuando cambi telefono, tocca \"Esporta\" in \"Impostazioni\" per salvare un file, poi \"Importa\" sul nuovo telefono. Vengono trasferite solo le impostazioni; le foto non sono incluse.",
+      "In \"Impostazioni\" (modalità creazione) puoi cambiare \"Dimensione testo\", \"Testo della carta\" (con OFF si vedono solo le immagini), \"Lettura vocale\" (all'inizio OFF), \"Lato meno visibile\", \"Colore\", \"Musica\" e \"Volume\".\nScegli la lingua con \"Language\" in alto a destra.\nPuoi rivedere questa guida in qualsiasi momento con \"Rivedi\", accanto a \"Come si usa\" in \"Impostazioni\"."
+    ]
   }
 };
 
@@ -1192,6 +1350,32 @@ var pt = {
       "cleared": "Tudo apagado. Toque em \"Desfazer\" para recuperar.",
       "restored": "Recuperado"
     }
+  },
+  "guide": {
+    "title": "Como usar",
+    "step": "{n} / {m}",
+    "start": "Começar",
+    "again": "Ver de novo",
+    "prev": "Anterior",
+    "next": "Próximo",
+    "heads": [
+      "Boas-vindas ao Notas de Conversa Soyogi",
+      "\"Sim / Não\" e \"Estado / Dor\"",
+      "\"Pessoas / Fotos\"",
+      "\"Números / Hora\" e \"Palavras\"",
+      "Modo de criação e modo de uso",
+      "Fotos e ajustes ficam neste aparelho",
+      "Ver melhor e rever este guia"
+    ],
+    "bodies": [
+      "Este app é um caderno para comunicar sentimentos e como a pessoa está, mostrando, apontando e escolhendo, quando é difícil as palavras saírem.\nA pessoa e a família ou os cuidadores podem usá-lo juntos.\nEscolha pelos botões grandes da tela inicial ou pelos botões de baixo. Toque no nome no alto para voltar à tela inicial a qualquer momento.",
+      "Em \"Sim / Não\", responda com os botões grandes \"Sim\", \"Não\" ou \"Não sei\". Se errar, toque em \"Cancelar\".\nEm \"Estado / Dor\", toque no lugar do desenho do corpo (\"Frente\" ou \"Costas\") e depois escolha \"Quanto\" com os rostos e os números de 0 a 10. \"Recomeçar\" permite fazer de novo.",
+      "Organize fotos da família, lugares, comida e mais em \"Pessoas\", \"Lugares\", \"Comida\", \"Atividades\" e \"Desejos\". Toque em uma foto para vê-la grande.\nSó é possível adicionar fotos no modo de criação. Use \"Tirar uma foto\" ou \"Escolher do álbum\", ajuste a foto, escreva o \"Nome / palavra\" e toque em \"Criar\".",
+      "\"Números / Hora\" mostra a hora atual em tamanho grande. Os números tocados ficam em fila no alto. Para corrigir, use \"Apagar um\" ou \"Apagar tudo\".\nEm \"Palavras\", escolha as letras uma a uma; elas ficam em fila no alto para você mostrar. Para corrigir, use \"Apagar uma\" ou \"Apagar tudo\". Logo depois de \"Apagar tudo\", \"Desfazer\" traz de volta.",
+      "Normalmente o app fica no modo de uso e os \"Ajustes\" ficam escondidos (para a pessoa não mudar nada por engano).\nToque em 🔒 no canto superior direito {n} vezes seguidas para entrar no modo de criação; então os \"Ajustes\" aparecem embaixo. Adicionar fotos, renomeá-las e apagá-las também é feito no modo de criação.\nQuando terminar, toque em \"🔒 Voltar ao modo de uso\" em \"Ajustes\". O app também sempre começa no modo de uso ao ser aberto.",
+      "Fotos e ajustes ficam salvos apenas neste aparelho. Nada é enviado e não é preciso cadastro.\nAo trocar de telefone, toque em \"Exportar\" em \"Ajustes\" para salvar um arquivo e depois em \"Importar\" no telefone novo. Só os ajustes são transferidos; as fotos não estão incluídas.",
+      "Em \"Ajustes\" (modo de criação), você pode mudar \"Tamanho do texto\", \"Texto do cartão\" (em OFF mostra só imagens), \"Ler em voz alta\" (em OFF no início), \"Lado mais difícil de ver\", \"Cor\", \"Música\" e \"Volume\".\nEscolha o idioma em \"Language\", no canto superior direito.\nVocê pode ver este guia de novo a qualquer momento com \"Ver de novo\", ao lado de \"Como usar\" em \"Ajustes\"."
+    ]
   }
 };
 
@@ -1372,6 +1556,32 @@ var nl = {
       "cleared": "Alles gewist. Tik op \"Ongedaan maken\" om het terug te halen.",
       "restored": "Teruggehaald"
     }
+  },
+  "guide": {
+    "title": "Zo werkt het",
+    "step": "{n} / {m}",
+    "start": "Beginnen",
+    "again": "Nog eens bekijken",
+    "prev": "Vorige",
+    "next": "Volgende",
+    "heads": [
+      "Welkom bij Soyogi gespreksnotities",
+      "\"Ja / Nee\" en \"Toestand / Pijn\"",
+      "\"Mensen / Foto's\"",
+      "\"Cijfers / Tijd\" en \"Woorden\"",
+      "Bewerkmodus en gebruiksmodus",
+      "Foto's en instellingen blijven op dit apparaat",
+      "Beter zichtbaar maken en opnieuw bekijken"
+    ],
+    "bodies": [
+      "Deze app is een notitieboek om gevoelens en hoe het gaat te delen door te laten zien, te wijzen en te kiezen, als woorden moeilijk komen.\nDe persoon zelf en familie of verzorgers kunnen het samen gebruiken.\nKies met de grote knoppen op het beginscherm of met de knoppen onderaan. Tik op de naam bovenaan om altijd terug te gaan naar het beginscherm.",
+      "Bij \"Ja / Nee\" antwoordt u met de grote knoppen \"Ja\", \"Nee\" of \"Weet ik niet\". Vergist u zich, tik dan op \"Annuleren\".\nBij \"Toestand / Pijn\" raakt u de plek aan op de lichaamstekening (\"Voorkant\" of \"Achterkant\") en kiest u daarna \"Hoeveel\" met de gezichten en de cijfers 0 tot 10. Met \"Opnieuw beginnen\" begint u opnieuw.",
+      "Zet foto's van familie, plaatsen, eten en meer bij \"Mensen\", \"Plaatsen\", \"Eten\", \"Activiteiten\" en \"Wensen\". Tik op een foto om hem groot te zien.\nFoto's toevoegen kan alleen in de bewerkmodus. Gebruik \"Foto maken\" of \"Kiezen uit album\", maak de foto passend, schrijf de \"Naam / woord\" en tik op \"Maken\".",
+      "\"Cijfers / Tijd\" toont de huidige tijd in grote cijfers. Getikte cijfers komen bovenaan op een rij. Verbeteren doet u met \"Eén verwijderen\" of \"Alles wissen\".\nBij \"Woorden\" kiest u letters één voor één; ze komen bovenaan op een rij zodat u ze kunt laten zien. Verbeteren doet u met \"Eén letter verwijderen\" of \"Alles wissen\". Direct na \"Alles wissen\" haalt \"Ongedaan maken\" ze terug.",
+      "Normaal staat de app in de gebruiksmodus en zijn de \"Instellingen\" verborgen (zodat de persoon ze niet per ongeluk wijzigt).\nTik {n} keer achter elkaar op 🔒 rechtsboven om naar de bewerkmodus te gaan; onderaan verschijnen dan de \"Instellingen\". Foto's toevoegen, hernoemen en verwijderen gaat ook in de bewerkmodus.\nBent u klaar, tik dan in \"Instellingen\" op \"🔒 Terug naar gebruiksmodus\". De app start bovendien altijd in de gebruiksmodus.",
+      "Foto's en instellingen worden alleen op dit apparaat opgeslagen. Er wordt niets verzonden en u hoeft geen account aan te maken.\nBij een nieuwe telefoon tikt u in \"Instellingen\" op \"Exporteren\" om een bestand op te slaan, en op de nieuwe telefoon op \"Importeren\". Alleen de instellingen gaan mee; foto's zitten er niet bij.",
+      "In \"Instellingen\" (bewerkmodus) kunt u \"Tekstgrootte\", \"Kaarttekst\" (UIT toont alleen afbeeldingen), \"Voorlezen\" (eerst UIT), \"Moeilijk zichtbare kant\", \"Kleur\", \"Muziek\" en \"Volume\" wijzigen.\nKies de taal rechtsboven bij \"Language\".\nDeze uitleg kunt u altijd opnieuw bekijken met \"Nog eens bekijken\" bij \"Zo werkt het\" in \"Instellingen\"."
+    ]
   }
 };
 
@@ -1552,6 +1762,32 @@ var sv = {
       "cleared": "Rensat. Tryck på \"Ångra\" för att få tillbaka.",
       "restored": "Återställt"
     }
+  },
+  "guide": {
+    "title": "Så används appen",
+    "step": "{n} / {m}",
+    "start": "Börja",
+    "again": "Visa igen",
+    "prev": "Föregående",
+    "next": "Nästa",
+    "heads": [
+      "Välkommen till Soyogi Samtalsanteckningar",
+      "\"Ja / Nej\" och \"Mående / Smärta\"",
+      "\"Personer / Foton\"",
+      "\"Siffror / Tid\" och \"Ord\"",
+      "Redigeringsläge och användarläge",
+      "Foton och inställningar stannar på den här enheten",
+      "Gör det lättare att se och visa igen"
+    ],
+    "bodies": [
+      "Den här appen är en anteckningsbok för att förmedla känslor och hur man mår genom att visa, peka och välja, när orden är svåra att få fram.\nPersonen själv och anhöriga eller vårdare kan använda den tillsammans.\nVälj med de stora knapparna på startskärmen eller knapparna längst ner. Tryck på namnet högst upp för att när som helst gå tillbaka till startskärmen.",
+      "Under \"Ja / Nej\" svarar du med de stora knapparna \"Ja\", \"Nej\" eller \"Vet inte\". Blev det fel, tryck på \"Avbryt\".\nUnder \"Mående / Smärta\" trycker du på stället på kroppsbilden (\"Framsida\" eller \"Baksida\") och väljer sedan \"Hur mycket\" med ansiktena och siffrorna 0 till 10. Med \"Börja om\" gör du om.",
+      "Sortera foton av familj, platser, mat och annat under \"Personer\", \"Platser\", \"Mat\", \"Aktiviteter\" och \"Önskemål\". Tryck på ett foto för att se det stort.\nFoton kan bara läggas till i redigeringsläge. Använd \"Ta ett foto\" eller \"Välj från albumet\", justera fotot, skriv \"Namn / ord\" och tryck på \"Skapa\".",
+      "\"Siffror / Tid\" visar aktuell tid med stora siffror. Siffror du trycker på radas upp ovanför. Rätta med \"Ta bort en\" eller \"Rensa allt\".\nUnder \"Ord\" väljer du bokstäver en i taget; de radas upp ovanför så att du kan visa dem. Rätta med \"Ta bort en\" eller \"Rensa allt\". Direkt efter \"Rensa allt\" tar \"Ångra\" tillbaka dem.",
+      "Normalt är appen i användarläge och \"Inställningar\" är dolt (så att personen inte ändrar något av misstag).\nTryck {n} gånger i rad på 🔒 uppe till höger för att gå till redigeringsläge; då visas \"Inställningar\" längst ner. Att lägga till, byta namn på och ta bort foton görs också i redigeringsläge.\nNär du är klar trycker du på \"🔒 Tillbaka till användarläge\" under \"Inställningar\". Appen startar också alltid i användarläge.",
+      "Foton och inställningar sparas bara på den här enheten. Inget skickas någonstans och inget konto behövs.\nNär du byter telefon trycker du på \"Exportera\" under \"Inställningar\" för att spara en fil, och sedan på \"Importera\" på den nya telefonen. Bara inställningarna flyttas; foton ingår inte.",
+      "Under \"Inställningar\" (redigeringsläge) kan du ändra \"Textstorlek\", \"Text på kort\" (AV visar bara bilder), \"Läs upp\" (AV från början), \"Sida som syns sämre\", \"Färg\", \"Musik\" och \"Volym\".\nVälj språk uppe till höger under \"Language\".\nDen här guiden kan du se igen när som helst med \"Visa igen\" vid \"Så används appen\" under \"Inställningar\"."
+    ]
   }
 };
 
@@ -1732,6 +1968,32 @@ var ko = {
       "cleared": "전부 지웠어요. 「되돌리기」로 되살릴 수 있어요",
       "restored": "되돌렸어요"
     }
+  },
+  "guide": {
+    "title": "사용 방법",
+    "step": "{n} / {m}",
+    "start": "시작하기",
+    "again": "다시 보기",
+    "prev": "이전",
+    "next": "다음",
+    "heads": [
+      "대화 보조 노트 · SOYOGI에 오신 것을 환영해요",
+      "「예 · 아니요」와 「몸 상태 · 통증」",
+      "「사람 · 사진」",
+      "「숫자 · 시간」과 「글자」",
+      "만들기 모드와 사용 모드",
+      "사진과 설정은 이 기기 안에만",
+      "보기 쉽게 하기 · 다시 보기"
+    ],
+    "bodies": [
+      "이 앱은 말이 잘 나오지 않을 때 보여 주고 · 가리키고 · 골라서 마음이나 상태를 전하는 노트예요.\n본인과 가족 · 돌봄을 하는 분이 함께 쓸 수 있어요.\n홈의 큰 버튼이나 아래 버튼에서 골라요. 위의 이름을 누르면 언제든지 홈으로 돌아가요.",
+      "「예 · 아니요」에서는 「예」 「아니요」 「잘 모르겠어요」 큰 버튼으로 대답해요. 잘못 눌렀으면 「취소」를 눌러요.\n「몸 상태 · 통증」에서는 몸 그림(「앞」 「뒤」)에서 위치를 누르고, 얼굴 그림과 숫자 0~10으로 「얼마나」를 골라요. 「처음부터」로 다시 할 수 있어요.",
+      "가족 · 장소 · 음식 등의 사진을 「사람」 「장소」 「음식」 「활동」 「원하는 것」으로 나누어 놓아요. 사진을 누르면 크게 보여요.\n사진 추가는 만들기 모드에서만 할 수 있어요. 「카메라로 찍기」나 「앨범에서 고르기」로 가져와 위치를 맞추고, 「이름 · 낱말」을 적은 뒤 「이것으로 만들기」를 눌러요.",
+      "「숫자 · 시간」에서는 지금 시각이 크게 나와요. 숫자를 누르면 위에 나란히 놓여요. 고칠 때는 「하나 지우기」 「전부 지우기」를 눌러요.\n「글자」에서는 한 글자씩 골라 위에 나란히 놓고 보여 줘요. 「한 글자 지우기」 「전부 지우기」로 고칠 수 있어요. 「전부 지우기」 바로 뒤라면 「되돌리기」로 되살릴 수 있어요.",
+      "평소에는 사용 모드이고 「설정」은 숨겨져 있어요(본인이 실수로 바꾸지 않도록).\n오른쪽 위의 🔒 를 {n}번 연달아 누르면 만들기 모드가 되고, 아래에 「설정」이 나와요. 사진 추가 · 이름 바꾸기 · 지우기도 만들기 모드에서 해요.\n다 끝나면 「설정」의 「🔒 사용 모드로 돌아가기」를 눌러요. 앱을 다시 열어도 사용 모드로 시작해요.",
+      "사진과 설정은 이 기기 안에만 저장되고 어디에도 보내지지 않아요. 가입도 필요 없어요.\n스마트폰을 바꿀 때는 「설정」의 「내보내기」로 파일을 저장하고, 새 스마트폰에서 「불러오기」를 눌러요. 옮겨지는 것은 설정뿐이고 사진은 포함되지 않아요.",
+      "「설정」(만들기 모드)에서 「글자 크기」 「카드 글자」(OFF면 그림만 보여요) 「읽어 주기」(처음에는 OFF) 「잘 안 보이는 쪽」 「색」 「배경 음악」 「소리 크기」를 바꿀 수 있어요.\n언어는 오른쪽 위의 「Language」에서 골라요.\n이 안내는 「설정」의 「사용 방법」 옆 「다시 보기」로 언제든지 다시 볼 수 있어요."
+    ]
   }
 };
 
@@ -1912,6 +2174,32 @@ var zh = {
       "cleared": "已全部删除。点按“撤销”可恢复",
       "restored": "已恢复"
     }
+  },
+  "guide": {
+    "title": "使用方法",
+    "step": "{n} / {m}",
+    "start": "开始",
+    "again": "再看一次",
+    "prev": "上一步",
+    "next": "下一步",
+    "heads": [
+      "欢迎使用对话辅助笔记 · SOYOGI",
+      "“是 / 否”和“身体状况 / 疼痛”",
+      "“人物 / 照片”",
+      "“数字 / 时间”和“文字”",
+      "编辑模式和使用模式",
+      "照片和设置只保存在这台设备里",
+      "调整显示方式・再看一次"
+    ],
+    "bodies": [
+      "这个应用是一本笔记，在话语难以说出口时，通过展示、指认、选择来传达心情和状况。\n本人和家人、照护者可以一起使用。\n可以从主页的大按钮或下方的按钮中选择。点按上方的名称，随时可以回到主页。",
+      "在“是 / 否”中，用大按钮“是”“否”“不确定”来回答。点错了就点按“取消”。\n在“身体状况 / 疼痛”中，在身体图（“正面”“背面”）上点按部位，再用表情和数字 0 到 10 选择“程度”。点按“重新开始”可以重来。",
+      "把家人、地点、食物等照片分到“人物”“地点”“食物”“活动”“想要的”里排列。点按照片可以放大显示。\n只有在编辑模式下才能添加照片。用“用相机拍摄”或“从相册中选择”导入，调整位置，写上“名称 / 词语”，再点按“创建”。",
+      "“数字 / 时间”会用大字显示现在的时刻。点按的数字会排列在上方。要修改时用“删除一个”或“全部删除”。\n在“文字”中逐字选择，文字会排列在上方，可以给对方看。可以用“删除一个字”或“全部删除”修改。刚点按“全部删除”后，可以用“撤销”恢复。",
+      "平时是使用模式，“设置”是隐藏的（以免本人误改）。\n连续点按右上角的 🔒 {n} 次就会进入编辑模式，下方会出现“设置”。添加照片、修改名称、删除照片也在编辑模式下进行。\n完成后，在“设置”中点按“🔒 返回使用模式”。重新打开应用时也会从使用模式开始。",
+      "照片和设置只保存在这台设备里，不会发送到任何地方，也不需要注册。\n更换手机时，请在“设置”中点按“导出”保存文件，再在新手机上点按“导入”。只会转移设置，不包括照片。",
+      "在“设置”（编辑模式）中，可以更改“文字大小”“卡片文字”（关闭时只显示图片）“朗读”（一开始是关闭的）“不易看清的一侧”“颜色”“背景音乐”“音量”。\n语言可以在右上角的“Language”中选择。\n在“设置”中“使用方法”一行点按“再看一次”，随时可以再次查看本说明。"
+    ]
   }
 };
 
@@ -2092,6 +2380,32 @@ var ar = {
       "cleared": "تم المسح. اضغط «تراجع» لاستعادته.",
       "restored": "تمت الاستعادة"
     }
+  },
+  "guide": {
+    "title": "طريقة الاستخدام",
+    "step": "{n} / {m}",
+    "start": "ابدأ",
+    "again": "عرض مرة أخرى",
+    "prev": "السابق",
+    "next": "التالي",
+    "heads": [
+      "مرحبًا بك في دفتر مساعدة المحادثة · SOYOGI",
+      "«نعم / لا» و«الحالة / الألم»",
+      "«أشخاص / صور»",
+      "«أرقام / وقت» و«كلمات»",
+      "وضع الإعداد ووضع الاستخدام",
+      "الصور والإعدادات تبقى على هذا الجهاز",
+      "اجعل العرض أوضح، وشاهد الدليل مرة أخرى"
+    ],
+    "bodies": [
+      "هذا التطبيق دفتر يساعد على التعبير عن المشاعر والحال بالعرض والإشارة والاختيار، حين يصعب خروج الكلمات.\nيمكن أن يستخدمه الشخص نفسه مع أفراد عائلته أو مقدّمي الرعاية معًا.\nاختر من الأزرار الكبيرة في الشاشة الرئيسية أو من الأزرار في الأسفل، واضغط على الاسم في الأعلى للعودة إلى الشاشة الرئيسية في أي وقت.",
+      "في «نعم / لا» أجب بالأزرار الكبيرة «نعم» أو «لا» أو «لست متأكدًا». وإذا أخطأت اضغط «إلغاء».\nفي «الحالة / الألم» المس المكان على رسم الجسم («الأمام» أو «الخلف»)، ثم اختر «إلى أي درجة» بالوجوه والأرقام من 0 إلى 10. وزر «البدء من جديد» يعيد من البداية.",
+      "رتّب صور العائلة والأماكن والطعام وغيرها في «أشخاص» و«أماكن» و«طعام» و«أنشطة» و«رغبات». اضغط على صورة لتراها كبيرة.\nلا تُضاف الصور إلا في وضع الإعداد. استخدم «التقاط صورة» أو «اختيار من الألبوم»، واضبط موضع الصورة، واكتب «الاسم / الكلمة»، ثم اضغط «إنشاء».",
+      "تعرض «أرقام / وقت» الوقت الحالي بأرقام كبيرة، والأرقام التي تضغطها تصطف في الأعلى. وللتصحيح استخدم «حذف واحد» أو «مسح الكل».\nفي «كلمات» اختر الحروف واحدًا واحدًا، فتصطف في الأعلى لتُريها. وللتصحيح استخدم «حذف حرف» أو «مسح الكل». وبعد «مسح الكل» مباشرة يعيدها زر «تراجع».",
+      "في العادة يكون التطبيق في وضع الاستخدام، و«الإعدادات» مخفية (حتى لا يغيّرها الشخص بالخطأ).\nاضغط على 🔒 في أعلى الشاشة {n} مرات متتالية للدخول إلى وضع الإعداد، فتظهر «الإعدادات» في الأسفل. وإضافة الصور وتغيير أسمائها وحذفها تتم أيضًا في وضع الإعداد.\nعند الانتهاء اضغط «🔒 العودة إلى وضع الاستخدام» في «الإعدادات». كما يبدأ التطبيق دائمًا في وضع الاستخدام عند فتحه.",
+      "تُحفظ الصور والإعدادات على هذا الجهاز فقط، ولا يُرسل أي شيء إلى أي مكان، ولا حاجة للتسجيل.\nعند تغيير الهاتف اضغط «تصدير» في «الإعدادات» لحفظ ملف، ثم اضغط «استيراد» في الهاتف الجديد. تُنقل الإعدادات فقط ولا تشمل الصور.",
+      "في «الإعدادات» (وضع الإعداد) يمكنك تغيير «حجم الخط» و«نص البطاقة» (عند الإيقاف تظهر الصور فقط) و«القراءة الصوتية» (متوقفة في البداية) و«الجهة الأصعب رؤيةً» و«اللون» و«موسيقى» و«مستوى الصوت».\nاختر اللغة من «Language» في أعلى الشاشة.\nيمكنك مشاهدة هذا الدليل مرة أخرى في أي وقت بزر «عرض مرة أخرى» بجانب «طريقة الاستخدام» في «الإعدادات»."
+    ]
   }
 };
 

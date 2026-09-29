@@ -69,6 +69,8 @@ function allText(node){
 
 /* ---- sandbox ---- */
 const lsData = {};
+/* はじめての つかいかた(2026-09-30)は読み終えた扱いで始める(案内そのものは store/_back_check.js で本物のChromeで試す) */
+lsData['kaiwa.guide.v1'] = 'true';
 const sandbox = {
   console,
   setTimeout, clearTimeout, setInterval, clearInterval,

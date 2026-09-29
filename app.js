@@ -11,7 +11,7 @@
      戻すは せっていの「本人使用モードに もどす」ボタンのみ。起動のたびに施錠から始める。 */
 (function(){
 
-const VER = '0.1.7';
+const VER = '0.1.8';
 const LS_PREF = 'kaiwa.pref.v1';
 
 /* 12言語対応(ja/en + de/fr/es/it/pt/nl/sv/ko/zh/ar)。翻訳テーブルは i18n.js。
@@ -78,7 +78,8 @@ const I18N_MAP = {
   'set-h-normal':'set.hNormal', 'lbl-fs':'set.fs', 'lbl-showtext':'set.showText', 'lbl-tts':'set.tts',
   'lbl-weakside':'set.weakSide', 'lbl-theme':'set.theme', 'lbl-bgm':'set.bgm', 'lbl-vol':'set.vol',
   'set-h-backup':'set.hBackup', 'bk-hint':'set.bkHint', 'bk-export':'set.bkExport', 'bk-import':'set.bkImport',
-  'link-privacy':'set.privacy', 'about-credit':'set.credit'
+  'link-privacy':'set.privacy', 'about-credit':'set.credit',
+  'lbl-guide':'guide.title', 'btn-guide':'guide.again'   // はじめての つかいかた を もう一度(せっていの行・2026-09-30)
 };
 
 /* ---- 画面ルーター ----
@@ -199,6 +200,7 @@ function applyI18n(){
   $('btn-tapn').textContent = pref.tapUnlock + T('lock.times');
   $('about-ver').textContent = 'v' + VER;
   if(CATS.indexOf(currentScreen) >= 0) renderCategory(currentScreen);   // 表示中のカテゴリ画面も訳し直す
+  if(guideOv) guideOv._draw();                                          // はじめての つかいかた も訳し直す(いまのページのまま)
 }
 function applyAll(){
   applyBodyClass();
@@ -301,6 +303,7 @@ function minimizeApp(){
 function onBack(){
   const ask = document.querySelector('.ask-ov');
   if(ask && typeof ask._back === 'function'){ ask._back(); return; }
+  if(guideOv){ guideOv._back(); return; }   // はじめての つかいかた(下の節): 2ページ目から=まえ / 1ページ目=初回は後ろに下げる・せっていから開いたときは閉じる
   const mod = (CATS.indexOf(currentScreen) >= 0 && window.KAIWA_SCREENS) ? window.KAIWA_SCREENS.get(currentScreen) : null;
   if(mod && typeof mod.back === 'function'){
     try{ if(mod.back(screenApi()) === true) return; }catch(err){ console.error('back error:', currentScreen, err); }
@@ -313,6 +316,108 @@ function watchBack(){
   const ap = nativePlugin('App', 'addListener');
   if(!ap) return;
   try{ ap.addListener('backButton', () => onBack()); }catch(_){}
+}
+
+/* ---- はじめての つかいかた(初回の案内・2026-09-30) ----
+   ヒロさん「ひとつずつ・そよぎ みたいなタイプのアプリは、必ず最初に使い方の丁寧な説明を出してほしい。10代の情報室のように」。
+   キットの templates/app.js openGuide と同じ動きを、このアプリの作りに合わせて入れた:
+   ・初回起動で必ず出す(最後まで読むまで、開くたびに出る)。全画面(ヘッダー・下のナビより上)。文言は i18n の guide.*
+   ・1ページずつ「つぎ」「まえ」。閉じるのは最後のページの「はじめる」だけ(× は置かない)
+   ・戻るボタン(Play版・onBack): 2ページ目から=まえのページ / 1ページ目=初回なら後ろに下げる(閉じない)、せっていから開いたときは閉じる
+   ・読み終えたら kaiwa.guide.v1 = true。せってい(作成モード)の「つかいかた」の「もういちど 見る」で開き直せる
+   ・作成モードの鍵(ヘッダーの 🔒 の連打)は「隠れた入口」ではない: 🔒 と「せっていはロックを解除」はいつも見えていて、押すたびに「あと ◯かい」と出る。
+     鍵は本人が まちがえて せっていを変えないためのもの(10代の情報室のメモの部屋のように人から隠すものではない)。
+     なので案内で開き方を書き、せっていから もう一度 見られるようにした。回数は本文の {n} を pref.tapUnlock(3〜10)に置きかえる
+   ・1ページ目に ことば(ヘッダーの Language と同じ12言語)。案内がヘッダーを覆うため
+   ・BGM・よみあげは今までどおり(BGM は最初のタップで始まる。案内では よみあげない) */
+const LS_GUIDE = 'kaiwa.guide.v1';
+const GUIDE_RTL = new RegExp('[' + String.fromCharCode(0x590) + '-' + String.fromCharCode(0x8FF) + ']');
+let guideOv = null;
+function guideDone(){ return loadJSON(LS_GUIDE) === true; }
+function openGuide(first){
+  if(guideOv) return;                          // すでに開いていれば開かない(二重に出さない)
+  let bodies = T('guide.bodies');
+  if(!Array.isArray(bodies) || !bodies.length) return;
+  let i = 0;
+  const ov = el('div', 'guide-ov');
+  ov.setAttribute('role', 'dialog');
+  ov.setAttribute('aria-modal', 'true');
+  const box = el('div', 'guide-box');
+  const top = el('div', 'guide-top');
+  const ttl = el('p', 'guide-title');
+  const step = el('p', 'guide-step');
+  top.appendChild(ttl); top.appendChild(step);
+  box.appendChild(top);
+  let langRow = null, langLbl = null, langSel = null;
+  const src = $('set-lang');
+  if(src && src.options && src.options.length){
+    langRow = el('div', 'guide-lang');
+    langLbl = el('span', 'guide-lang-lbl');
+    langSel = document.createElement('select');
+    langSel.setAttribute('aria-label', 'Language 言語');
+    for(let o = 0; o < src.options.length; o++){
+      const op = document.createElement('option');
+      op.value = src.options[o].value; op.textContent = src.options[o].textContent;
+      langSel.appendChild(op);
+    }
+    langSel.addEventListener('change', () => {
+      pref.lang = langSel.value; savePref();
+      $('set-lang').value = pref.lang;
+      applyI18n();                               // 案内も draw() で訳し直す
+    });
+    langRow.appendChild(langLbl); langRow.appendChild(langSel);
+    box.appendChild(langRow);
+  }
+  const h = el('h2', 'guide-h');
+  const p = el('p', 'guide-p');
+  const dots = el('div', 'guide-dots');
+  dots.setAttribute('aria-hidden', 'true');
+  box.appendChild(h); box.appendChild(p); box.appendChild(dots);
+  const row = el('div', 'guide-row');
+  const prevB = el('button', 'guide-btn guide-prev');
+  const nextB = el('button', 'guide-btn guide-next');
+  prevB.type = 'button'; nextB.type = 'button';
+  row.appendChild(prevB); row.appendChild(nextB);
+  ov.appendChild(box); ov.appendChild(row);
+  function draw(){
+    const heads = T('guide.heads');
+    bodies = T('guide.bodies');                  // ことばを変えたときも、いまのページのまま訳し直す
+    const n = bodies.length;
+    if(i > n - 1) i = n - 1;
+    ov.setAttribute('aria-label', T('guide.title'));
+    ttl.textContent = T('guide.title');
+    step.textContent = String(T('guide.step')).replace('{n}', i + 1).replace('{m}', n);
+    step.setAttribute('dir', GUIDE_RTL.test(step.textContent) ? 'rtl' : 'ltr');   // 「1 / 7」は ar でも左から(「7 / 1」にしない)
+    if(langRow){
+      langRow.style.display = (i === 0) ? '' : 'none';
+      langLbl.textContent = T('set.lang');
+      langSel.value = pref.lang;
+    }
+    h.textContent = (Array.isArray(heads) && heads[i]) ? heads[i] : '';
+    p.textContent = String(bodies[i]).split('{n}').join(String(pref.tapUnlock));   // 作成モードに はいる タップの回数(せっていで 3〜10)
+    dots.textContent = '';
+    for(let k = 0; k < n; k++) dots.appendChild(el('span', 'guide-dot' + (k === i ? ' on' : '')));
+    prevB.textContent = T('guide.prev');
+    prevB.style.visibility = (i === 0) ? 'hidden' : 'visible';   // 「つぎ」の位置を変えない
+    nextB.textContent = (i === n - 1) ? T('guide.start') : T('guide.next');
+    ov.scrollTop = 0;
+  }
+  function close(){
+    if(ov.parentNode) ov.parentNode.removeChild(ov);
+    guideOv = null;
+    saveJSON(LS_GUIDE, true);
+  }
+  ov._draw = draw;
+  ov._back = () => {
+    if(i > 0){ i--; draw(); return; }
+    if(first) minimizeApp(); else close();       // 初回は「はじめる」でしか閉じない(10代の情報室と同じ)
+  };
+  Tap.bind(prevB, () => { if(i > 0){ i--; draw(); } });
+  Tap.bind(nextB, () => { if(i < bodies.length - 1){ i++; draw(); } else close(); });
+  draw();
+  guideOv = ov;
+  document.body.appendChild(ov);
+  try{ nextB.focus(); }catch(_){}
 }
 
 /* ---- 機種変更(バックアップ) ----
@@ -407,11 +512,13 @@ function init(){
   Tap.bind($('bk-export'), exportBackup);
   Tap.bind($('bk-import'), () => $('bk-file').click());
   $('bk-file').addEventListener('change', importBackup);
+  if($('btn-guide')) Tap.bind($('btn-guide'), () => openGuide(false));   // はじめての つかいかた を もう一度
 
   buildHomeCats();     // ホームの大ボタンを組み立ててから訳す(applyAll→applyI18n がラベルを入れる)
   applyAll();
   showScreen('home');
   applyLock();
+  if(!guideDone()) openGuide(true);   // はじめての つかいかた(読み終えるまで毎回・2026-09-30)
   watchBack();         // Android の戻るボタン(Play版だけ)
 
   /* Service Worker: 本番(https)だけ登録。localhost(開発)ではSWを使わず、
