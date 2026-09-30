@@ -233,20 +233,33 @@ check('再施錠でせっていナビが隠れる', created['nav-set'].classList
 check('ロックアイコンが🔒に戻る', byId('hd-lock').textContent === '🔒');
 check('ホームに戻る', !created['scr-home'].classList.contains('hidden'));
 
-console.log('[7] 機種変更: かきだす / よみこむ(v0.1はせってい値のみ)');
+console.log('[7] 機種変更: かきだす / よみこむ(せってい + ひと・しゃしん の写真。2026-09-30 深夜から写真も)');
 for(let i = 0; i < 5; i++) tapEl(byId('hd-lock'));   // 再度解錠
 tapEl(created['nav-set']);
+const IMG = 'data:image/jpeg;base64,/9j/AAAA';
+lsData['kaiwa.dict.v1'] = JSON.stringify([{ id:'p1', cat:'people', label:'はは', img:IMG }, { id:'p2', cat:'food', label:'', img:IMG }]);
 tapEl(byId('bk-export'));
 const blobJson = sandbox.__lastBlob ? JSON.parse(sandbox.__lastBlob.parts.join('')) : null;
 check('Blobにアプリ名が入る', !!blobJson && blobJson.app === 'kaiwa_hojo_note');
 check('Blobにせってい値が入る', !!blobJson && blobJson.prefs && blobJson.prefs.lang === 'ja');
+check('Blobに ひと・しゃしん の写真も入る(ver2・2まい・なまえ・分けた所も)', !!blobJson && blobJson.ver === 2 && Array.isArray(blobJson.dict) && blobJson.dict.length === 2 &&
+  blobJson.dict[0].label === 'はは' && blobJson.dict[0].img === IMG && blobJson.dict[1].cat === 'food');
 const good = JSON.stringify({ app:'kaiwa_hojo_note', ver:1,
   prefs:{ lang:'ja', fs:0, showText:true, tts:true, weakSide:'left', theme:'dark', vol:1, tapUnlock:5 } });
 fire(created['bk-file'], 'change', { target:{ files:[{ _text: good }], value:'' } });
 check('せってい値が差し替わる(テーマ=くろ)', sandbox.document.body.getAttribute('data-theme') === 'dark');
 check('よみあげ設定も反映(ON)', byId('btn-tts').textContent === 'ON');
+check('前の版の写真なしのファイル(ver1)は、いまの写真をそのまま残す', JSON.parse(lsData['kaiwa.dict.v1']).length === 2);
+const good2 = JSON.stringify({ app:'kaiwa_hojo_note', ver:2,
+  prefs:{ lang:'ja', fs:0, showText:true, tts:false, weakSide:'none', theme:'green', vol:1, tapUnlock:5 },
+  dict:[{ id:'p7', cat:'places', label:'うち', img:IMG }, { id:'p8', cat:'people', label:'そと', img:'https://example.com/a.jpg' }, { id:'p9', cat:'nazo', label:'x', img:IMG }, null] });
+fire(created['bk-file'], 'change', { target:{ files:[{ _text: good2 }], value:'' } });
+const dictAfter = JSON.parse(lsData['kaiwa.dict.v1']);
+check('写真入りのファイル(ver2)は写真も戻る(端末の中の写真・決まった分け方だけ・番号はつけ直す)', dictAfter.length === 1 && dictAfter[0].label === 'うち' && dictAfter[0].cat === 'places' && dictAfter[0].id === 'p1' && dictAfter[0].img === IMG);
+check('写真入りのファイルでも せってい は戻る(テーマ=みどり)', sandbox.document.body.getAttribute('data-theme') === 'green' && created['toast'].textContent.indexOf('よみこみました') >= 0);
 fire(created['bk-file'], 'change', { target:{ files:[{ _text: JSON.stringify({ app:'other_app' }) }], value:'' } });
 check('別アプリのファイルは拒否', created['toast'].textContent.indexOf('よみこめませんでした') >= 0);
+lsData['kaiwa.dict.v1'] = '[]';
 
 console.log('[8] データ整合(i18n の ja/en キー構造)');
 const I18 = evalCtx('window.KAIWA_I18N');

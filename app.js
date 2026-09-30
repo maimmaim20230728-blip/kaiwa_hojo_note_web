@@ -11,7 +11,7 @@
      戻すは せっていの「本人使用モードに もどす」ボタンのみ。起動のたびに施錠から始める。 */
 (function(){
 
-const VER = '0.1.8';
+const VER = '0.1.9';
 const LS_PREF = 'kaiwa.pref.v1';
 
 /* 12言語対応(ja/en + de/fr/es/it/pt/nl/sv/ko/zh/ar)。翻訳テーブルは i18n.js。
@@ -229,24 +229,56 @@ function nativePlugin(name, fn){
 /* ---- Play版のファイル保存(2026-09-30) ----
    Capacitor 8 の WebView には DownloadListener が無く、<a download> では何も保存されない(なのに「かきだしました」と出ていた)。
    端末の一時フォルダ(CACHE)に書いてから Android の共有の画面を出し、保存先は利用者が選ぶ。
-   done('ok')=送り先を選べた / done('quiet')=共有の画面を閉じた(何も出さない) / done('fail')=書けない・共有できない・プラグインが無い */
+   done('ok')=送り先を選べた / done('quiet')=共有の画面を閉じた(何も出さない) / done('fail')=書けない・共有できない・プラグインが無い
+   機種変更のファイルに写真も入れた(2026-09-30 深夜)ので、写真が多いとファイルが大きくなる(1まい 数十KB)。まるごと1回で渡すと
+   大きな文字列がネイティブとの橋渡しを通り、メモリが足りずに止まるおそれがある。音の箱庭の WAV と同じく、768KB(base64 で 1MB)ずつに分け、
+   1つ目を writeFile・2つ目からを appendFile で同じファイルに足していく(バイトで分けるので、字の途中で切れても つなぐと元どおり)。
+   書いている間にもう一度押されても、同じファイルに重ねて書かない(何もしない) */
 function shareQuiet(err){
   const m = String((err && (err.message || err.errorMessage)) || err || '');
   return !!err && (err.name === 'AbortError' || /cancel|in progress/i.test(m));
 }
+const SAVE_CHUNK = 3 * 256 * 1024;
+let nativeSaving = false;
+function blobToBase64(blob, cb){
+  try{
+    const fr = new FileReader();
+    fr.onload = () => { const s = String(fr.result || ''), i = s.indexOf(','); cb(i >= 0 ? s.slice(i + 1) : ''); };
+    fr.onerror = () => cb('');
+    fr.readAsDataURL(blob);
+  }catch(_){ cb(''); }
+}
 function nativeSaveFile(name, data, label, done){
   const fsp = nativePlugin('Filesystem', 'writeFile'), shp = nativePlugin('Share', 'share');
   if(!fsp || !shp){ done('fail'); return; }
-  let w;
-  try{ w = fsp.writeFile({ path:name, data:data, directory:'CACHE', encoding:'utf8' }); }catch(_){ done('fail'); return; }
-  if(!w || typeof w.then !== 'function'){ done('fail'); return; }
-  w.then(r => {
-    if(!r || !r.uri){ done('fail'); return; }
+  if(nativeSaving) return;
+  let blob;
+  try{ blob = new Blob([data], { type:'application/json' }); }catch(_){ done('fail'); return; }
+  const n = Math.max(1, Math.ceil(blob.size / SAVE_CHUNK));
+  if(n > 1 && !nativePlugin('Filesystem', 'appendFile')){ done('fail'); return; }
+  nativeSaving = true;
+  let i = 0, uri = null;
+  function fail(){ nativeSaving = false; done('fail'); }
+  (function next(){
+    if(i >= n){ nativeSaving = false; share(); return; }
+    blobToBase64(blob.slice(i * SAVE_CHUNK, Math.min(blob.size, (i + 1) * SAVE_CHUNK)), b64 => {
+      if(!b64){ fail(); return; }
+      const opt = { path:name, data:b64, directory:'CACHE' };
+      let w;
+      try{ w = (i === 0) ? fsp.writeFile(opt) : fsp.appendFile(opt); }catch(_){ fail(); return; }
+      if(!w || typeof w.then !== 'function'){ fail(); return; }
+      w.then(r => {
+        if(i === 0){ if(!r || !r.uri){ fail(); return; } uri = r.uri; }
+        i++; next();
+      }, fail);
+    });
+  })();
+  function share(){
     let s;
-    try{ s = shp.share({ title:name, files:[r.uri], dialogTitle:label }); }catch(err){ done(shareQuiet(err) ? 'quiet' : 'fail'); return; }
+    try{ s = shp.share({ title:name, files:[uri], dialogTitle:label }); }catch(err){ done(shareQuiet(err) ? 'quiet' : 'fail'); return; }
     if(s && typeof s.then === 'function') s.then(() => done('ok'), err => done(shareQuiet(err) ? 'quiet' : 'fail'));
     else done('ok');
-  }, () => done('fail'));
+  }
 }
 
 /* ---- アプリの中の確かめの窓(2026-09-30) ----
@@ -421,10 +453,27 @@ function openGuide(first){
 }
 
 /* ---- 機種変更(バックアップ) ----
-   v0.1骨組みはせってい値のみ。写真辞書(kaiwa.dict.v1)・ことば上書き(kaiwa.labels.v1)は
-   後続フェーズで各データが実装され次第、ここに追加する(SPEC_V1のデータ節を参照) */
+   ver2(2026-09-30 深夜): せってい + 「ひと・しゃしん」の写真(kaiwa.dict.v1 = 写真・なまえ・ことば・分けた所)を1つのファイルに入れる。
+     それまで(ver1)は せってい だけで、写真は うつせなかった。
+   よみこむ: ファイルに写真が入っていれば、この端末の写真を ファイルの写真に置きかえる(前のスマホと同じにする。スケジューラーと同じ考え)。
+     前の版で書き出した写真なしのファイル(ver1)は今までどおり読める(せっていだけ変わり、いまの写真はそのまま)。
+     写真が入りきらない(端末の きおくが いっぱい)ときは、せっていも写真も変えずに「よみこめませんでした」。
+     写真は端末の中の写真(data:image/…)だけを入れる(外のアドレスは読まない=オフラインのまま)。
+   ほかのデータ(ことば・すうじ の ならべた字)は端末に保存していないので、ファイルにも無い */
+const LS_DICT = 'kaiwa.dict.v1';                                      // screens/photo.js の写真のデータ(ここでは機種変更のときだけ読み書き)
+const PHOTO_CATS = ['people','places','food','activities','wants'];   // screens/photo.js の CATS と同じ
+function sanitizeDict(list){
+  const out = [];
+  list.forEach(c => {
+    if(!c || typeof c !== 'object' || PHOTO_CATS.indexOf(c.cat) < 0) return;
+    if(typeof c.img !== 'string' || !/^data:image\//.test(c.img)) return;
+    out.push({ id:'p' + (out.length + 1), cat:c.cat, label:(typeof c.label === 'string') ? c.label : '', img:c.img });
+  });
+  return out;
+}
 function exportBackup(){
-  const data = { app:'kaiwa_hojo_note', ver:1, prefs: pref };
+  const dict = loadJSON(LS_DICT);
+  const data = { app:'kaiwa_hojo_note', ver:2, prefs: pref, dict: Array.isArray(dict) ? dict : [] };
   const d = new Date();
   const fname = 'kaiwa-hojo-note-' + d.getFullYear() +
     String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.json';
@@ -452,6 +501,7 @@ function importBackup(e){
     try{
       const d = JSON.parse(r.result);
       if(d.app !== 'kaiwa_hojo_note') throw new Error('different app');
+      if(Array.isArray(d.dict) && !saveJSON(LS_DICT, sanitizeDict(d.dict))) throw new Error('storage full');   // 写真なし(ver1)は いまの写真のまま
       pref = sanitizePref(d.prefs); savePref();
       applyAll();
       toast(T('set.imported'));
