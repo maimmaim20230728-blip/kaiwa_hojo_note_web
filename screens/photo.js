@@ -399,7 +399,6 @@
 
     /* よみあげ(せっていのTTSがONのときだけ。既定OFF)。声を出せない人の「声」になる */
     if(api.pref.tts && entry.label){
-      speak(entry.label, api.pref.lang);
       var srow = elc('div', 'photo-row');
       srow.appendChild(iconBtn('photo-btn', '🔊', 'screen.photo.speak', function(){ speak(entry.label, api.pref.lang); }));
       ov.appendChild(srow);
@@ -418,6 +417,8 @@
     ov.appendChild(crow);
 
     openOverlay(ov);
+    /* 自動のよみあげは openOverlay の後(openOverlay が中で closeOverlay=stopSpeak を呼ぶため、前だと直後に取り消される) */
+    if(api.pref.tts && entry.label) speak(entry.label, api.pref.lang);
 
     function renderEditControls(){
       edit.textContent = '';
