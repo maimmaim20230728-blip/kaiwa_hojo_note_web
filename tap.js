@@ -85,6 +85,19 @@ const Tap = (() => {
       if(!o.silent) Sound.tap();
       fn(e);
     });
+    /* ⌨️ button 以外(div・SVG の からだの ず など)に付けたときは、Enter / スペースでも押せるようにする(2026-10-30)。
+       フォーカスが届くよう、呼ぶ側で tabindex="0" と role="button" を付ける。button は もとから Enter / スペースで click が来る */
+    const tag = String(el.tagName || '').toLowerCase();
+    if(['button','a','input','select','textarea','summary'].indexOf(tag) < 0){
+      el.addEventListener('keydown', e=>{
+        if(e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+        if(e.target !== el) return;   // 中の入力欄などの キーは じゃましない
+        e.preventDefault();
+        if(e.repeat) return;
+        if(!o.silent) Sound.tap();
+        fn(e);
+      });
+    }
     el.addEventListener('contextmenu', e=> e.preventDefault());   // 長押しメニュー抑止
   }
   return { bind };

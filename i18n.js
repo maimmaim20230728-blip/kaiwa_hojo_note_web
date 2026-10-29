@@ -61,6 +61,7 @@ var ja = {
     exported:'かきだしました ✓',
     imported:'よみこみました ✓',
     importFail:'よみこめませんでした',
+    saveFail:'ほぞん できませんでした',
     exportFail:'かきだせませんでした',
     privacy:'プライバシーポリシー',
     credit:'アプリ開発：介護と支援の相談どころ そよぎ'
@@ -233,6 +234,7 @@ var en = {
     exported:'Exported ✓',
     imported:'Imported ✓',
     importFail:'Could not import',
+    saveFail:'Could not save',
     exportFail:'Could not export',
     privacy:'Privacy Policy',
     credit:'App by: Soyogi (Care & Support Consultation)'
@@ -421,6 +423,7 @@ var de = {
     "exported": "Exportiert ✓",
     "imported": "Importiert ✓",
     "importFail": "Import fehlgeschlagen",
+    "saveFail": "Speichern fehlgeschlagen",
     "exportFail": "Export fehlgeschlagen",
     "privacy": "Datenschutzerklärung",
     "credit": "App von: Soyogi (Beratung für Pflege und Unterstützung)"
@@ -627,6 +630,7 @@ var fr = {
     "exported": "Exporté ✓",
     "imported": "Importé ✓",
     "importFail": "Importation impossible",
+    "saveFail": "Enregistrement impossible",
     "exportFail": "Exportation impossible",
     "privacy": "Politique de confidentialité",
     "credit": "Application développée par : SOYOGI (Conseil en soins et accompagnement)"
@@ -833,6 +837,7 @@ var es = {
     "exported": "Exportado ✓",
     "imported": "Importado ✓",
     "importFail": "No se pudo importar",
+    "saveFail": "No se pudo guardar",
     "exportFail": "No se pudo exportar",
     "privacy": "Política de privacidad",
     "credit": "Aplicación de: SOYOGI (Consultas de Cuidado y Apoyo)"
@@ -1039,6 +1044,7 @@ var it = {
     "exported": "Esportato ✓",
     "imported": "Importato ✓",
     "importFail": "Impossibile importare",
+    "saveFail": "Impossibile salvare",
     "exportFail": "Impossibile esportare",
     "privacy": "Informativa sulla privacy",
     "credit": "App di: SOYOGI (sportello di assistenza e supporto)"
@@ -1245,6 +1251,7 @@ var pt = {
     "exported": "Exportado ✓",
     "imported": "Importado ✓",
     "importFail": "Não foi possível importar",
+    "saveFail": "Não foi possível guardar",
     "exportFail": "Não foi possível exportar",
     "privacy": "Política de Privacidade",
     "credit": "Aplicativo por: Soyogi (Consultoria de Cuidado e Apoio)"
@@ -1451,6 +1458,7 @@ var nl = {
     "exported": "Geëxporteerd ✓",
     "imported": "Geïmporteerd ✓",
     "importFail": "Importeren mislukt",
+    "saveFail": "Opslaan mislukt",
     "exportFail": "Exporteren mislukt",
     "privacy": "Privacybeleid",
     "credit": "App door: Soyogi (Zorg- en ondersteuningsadvies)"
@@ -1657,6 +1665,7 @@ var sv = {
     "exported": "Exporterat ✓",
     "imported": "Importerat ✓",
     "importFail": "Kunde inte importera",
+    "saveFail": "Kunde inte spara",
     "exportFail": "Kunde inte exportera",
     "privacy": "Integritetspolicy",
     "credit": "App av: Soyogi (Rådgivning för vård och stöd)"
@@ -1863,6 +1872,7 @@ var ko = {
     "exported": "내보냈어요 ✓",
     "imported": "불러왔어요 ✓",
     "importFail": "불러오지 못했어요",
+    "saveFail": "저장하지 못했어요",
     "exportFail": "내보내지 못했어요",
     "privacy": "개인정보 처리방침",
     "credit": "앱 개발: 돌봄과 지원 상담소 SOYOGI"
@@ -2069,6 +2079,7 @@ var zh = {
     "exported": "已导出 ✓",
     "imported": "已导入 ✓",
     "importFail": "无法导入",
+    "saveFail": "无法保存",
     "exportFail": "无法导出",
     "privacy": "隐私政策",
     "credit": "应用开发:介护与支援咨询处 SOYOGI"
@@ -2275,6 +2286,7 @@ var ar = {
     "exported": "تم التصدير ✓",
     "imported": "تم الاستيراد ✓",
     "importFail": "تعذّر الاستيراد",
+    "saveFail": "تعذّر الحفظ",
     "exportFail": "تعذّر التصدير",
     "privacy": "سياسة الخصوصية",
     "credit": "تطوير التطبيق: SOYOGI (مركز استشارات الرعاية والدعم)"

@@ -70,6 +70,8 @@
     '.health-region{ fill:#cfe0d6; stroke:#7fae95; stroke-width:1.5; cursor:pointer; }',
     '.health-region.sel{ fill:var(--brand); stroke:var(--brand); stroke-width:3; }',
     '.health-region.pressing{ transform:none; filter:brightness(.9); }',
+    '.health-region:focus{ outline:none; }',
+    '.health-region:focus-visible{ stroke:var(--ink); stroke-width:4; }',
     'body[data-theme="dark"] .health-region{ fill:#3a4741; stroke:#6f867a; }',
     '.health-spine{ stroke:#7fae95; stroke-width:2; fill:none; opacity:.5; pointer-events:none; }',
     'body[data-theme="dark"] .health-spine{ stroke:#6f867a; }',
@@ -156,6 +158,7 @@
           node.setAttribute('class', 'health-region');
           node.setAttribute('data-part', r.p);
           node.setAttribute('role', 'button');
+          node.setAttribute('tabindex', '0');   // キーボード・スイッチでも届く(Enter / スペースは tap.js・2026-10-30)
           node.setAttribute('aria-label', api.T('screen.health.parts.' + r.p));
           Tap.bind(node, (function(n, part){ return function(){ selectPart(n, part); }; })(node, r.p));
           s.appendChild(node);

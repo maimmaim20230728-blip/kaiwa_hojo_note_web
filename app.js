@@ -11,7 +11,7 @@
      戻すは せっていの「本人使用モードに もどす」ボタンのみ。起動のたびに施錠から始める。 */
 (function(){
 
-const VER = '0.1.10';
+const VER = '0.1.11';
 const LS_PREF = 'kaiwa.pref.v1';
 
 /* 12言語対応(ja/en + de/fr/es/it/pt/nl/sv/ko/zh/ar)。翻訳テーブルは i18n.js。
@@ -55,7 +55,8 @@ function sanitizePref(p){
   };
 }
 let pref = sanitizePref(loadJSON(LS_PREF));
-function savePref(){ saveJSON(LS_PREF, pref); }
+/* 保存できなければ(容量がいっぱい・プライベートモードなど)その場で知らせる(2026-10-30)。画面の せっていは このまま使える */
+function savePref(){ if(!saveJSON(LS_PREF, pref)) toast(T('set.saveFail')); }
 function next(list, cur){ return list[(list.indexOf(cur) + 1) % list.length]; }
 
 /* ---- i18n ---- */
@@ -501,8 +502,14 @@ function importBackup(e){
     try{
       const d = JSON.parse(r.result);
       if(d.app !== 'kaiwa_hojo_note') throw new Error('different app');
-      if(Array.isArray(d.dict) && !saveJSON(LS_DICT, sanitizeDict(d.dict))) throw new Error('storage full');   // 写真なし(ver1)は いまの写真のまま
-      pref = sanitizePref(d.prefs); savePref();
+      /* せっていを先に保存(小さい)。保存できなければ何も変えずに「よみこめませんでした」(2026-10-30) */
+      const np = sanitizePref(d.prefs);
+      if(!saveJSON(LS_PREF, np)) throw new Error('storage full');
+      if(Array.isArray(d.dict) && !saveJSON(LS_DICT, sanitizeDict(d.dict))){   // 写真なし(ver1)は いまの写真のまま
+        saveJSON(LS_PREF, pref);   // 写真が入りきらない: せっていも もとに もどす
+        throw new Error('storage full');
+      }
+      pref = np;
       applyAll();
       toast(T('set.imported'));
     }catch(err){ toast(T('set.importFail')); }

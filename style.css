@@ -54,10 +54,13 @@ header#hd{
 }
 /* 鍵＋その下の案内を縦積み(初見でせっていに辿り着けず積むのを防ぐ。鍵の下=見やすい・ヒロ2026-07-25) */
 #hd-lock-wrap{ display:flex; flex-direction:column; align-items:center; gap:3px; flex-shrink:0; }
+/* 案内の文字: .55em(約10px)では読みにくかった → .72em(約14px・2026-10-30)。
+   幅は約85px で折り返す(前は約78px)。幅320px でも横にはみ出さないよう、狭い画面では右側の すきまを 16→8px に */
 .hd-lock-hint{
-  font-size:.55em; font-weight:700; line-height:1.2; color:#fff;
-  max-width:7.5em; text-align:center; white-space:normal;
+  font-size:.72em; font-weight:700; line-height:1.25; color:#fff;
+  max-width:6.2em; text-align:center; white-space:normal;
 }
+@media (max-width:380px){ #hd-right{ gap:8px; } }
 .hd-lock-hint.hidden{ display:none; }
 #lang-wrap{ display:flex; flex-direction:column; align-items:center; gap:3px; flex-shrink:0; }  /* [Language ラベル(常時・英語)]の下に[セレクト] */
 .lang-label{ font-size:.55em; font-weight:700; color:#fff; line-height:1; letter-spacing:.02em; }

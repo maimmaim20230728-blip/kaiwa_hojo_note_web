@@ -233,6 +233,7 @@
       list.forEach(function(entry){
         var card = elc('div', 'photo-card');
         card.setAttribute('aria-label', entry.label || api.T('screen.photo.title'));
+        card.setAttribute('role', 'button'); card.tabIndex = 0;   // キーボード・スイッチでも押せる(Enter / スペースは tap.js・2026-10-30)
         var img = elc('img', 'photo-card-img'); img.alt = entry.label || ''; img.src = entry.img || '';
         card.appendChild(img);
         if(showText && entry.label) card.appendChild(elc('div', 'photo-card-label', entry.label));
