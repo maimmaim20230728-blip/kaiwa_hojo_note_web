@@ -41,7 +41,7 @@ header#hd{
   background:var(--brand); color:#fff;
   /* 上の余白に safe-area を足す(エッジtoエッジで画面がステータスバーの下まで描かれるため、
      固定pxのままだとタイトル/言語セレクトが時計と重なる) */
-  padding:calc(12px + env(safe-area-inset-top)) 16px 12px; font-weight:700; font-size:19px;   /* 🔴ヘッダーのchrome(タイトル/鍵/言語)は固定サイズ=fs2でも肥大させない(横あふれ防止)。拡大するのは本文=#mainだけ。ラベル+コントロールの縦積みで高さが出る(ヒロ2026-07-25) */
+  padding:calc(20px + env(safe-area-inset-top)) 16px 12px; font-weight:700; font-size:19px;   /* 🔴ヘッダーのchrome(タイトル/鍵/言語)は固定サイズ=fs2でも肥大させない(横あふれ防止)。拡大するのは本文=#mainだけ。ラベル+コントロールの縦積みで高さが出る(ヒロ2026-07-25) */
   display:flex; align-items:center; justify-content:space-between; gap:14px;
   flex-shrink:0; overflow:hidden;   /* 上に固定(縮まない)＋横あふれをクリップ */
 }

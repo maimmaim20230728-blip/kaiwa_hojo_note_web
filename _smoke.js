@@ -276,7 +276,7 @@ console.log('[セーフエリア] 端末のバーに食い込まない');
 const cssTxt = fs.readFileSync(__dirname + '/style.css', 'utf8').replace(/\s+/g, '');
 check('viewport に viewport-fit=cover がある(env()が効く前提)', /viewport-fit=cover/.test(html));
 check('ヘッダーの上余白に env(safe-area-inset-top)(時計と重ならない)',
-  /header#hd\{[^}]*padding:calc\(12px\+env\(safe-area-inset-top\)\)16px12px/.test(cssTxt));
+  /header#hd\{[^}]*padding:calc\(20px\+env\(safe-area-inset-top\)\)16px12px/.test(cssTxt));
 check('トーストの bottom に env(safe-area-inset-bottom)',
   /\.toast\{[^}]*bottom:calc\(96px\+env\(safe-area-inset-bottom\)\)/.test(cssTxt));
 check('下ナビの下余白に env(safe-area-inset-bottom)',
