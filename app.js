@@ -11,7 +11,7 @@
      戻すは せっていの「本人使用モードに もどす」ボタンのみ。起動のたびに施錠から始める。 */
 (function(){
 
-const VER = '0.1.12';
+const VER = '0.1.13';
 const LS_PREF = 'kaiwa.pref.v1';
 
 /* 12言語対応(ja/en + de/fr/es/it/pt/nl/sv/ko/zh/ar)。翻訳テーブルは i18n.js。
@@ -154,6 +154,7 @@ let locked = true;
 function applyLock(){
   $('nav-set').classList.toggle('hidden', locked);
   $('hd-lock').textContent = locked ? '🔒' : '🔓';
+  $('hd-lock').setAttribute('aria-label', locked ? T('lock.hdHint') : T('lock.unlocked'));
   const hh = $('hd-lock-hint'); if(hh) hh.classList.toggle('hidden', !locked);
   if(locked && currentScreen === 'set') showScreen('home');
 }
@@ -189,6 +190,7 @@ function applyI18n(){
     const h = homeCatLabels[c];
     if(h){ h.label.textContent = T('nav.' + c); h.btn.setAttribute('aria-label', T('nav.' + c)); }
   }
+  applyLock();                                             // ロックボタンの aria-label も言語に追従
   document.documentElement.lang = pref.lang;
   document.documentElement.dir = (RTL_LANGS.indexOf(pref.lang) >= 0) ? 'rtl' : 'ltr';
   $('btn-fs').textContent = T('set.fsSizes')[pref.fs];
