@@ -30,7 +30,7 @@
   var styleInjected = false;
 
   var DOT_CAP = 20;         // ドット併記は 1〜20 まで(それ以上は数字だけで十分・ドットは出さない)
-  var MAX_DIGITS = 12;      // 並べられる桁数の上限(電話番号なども想定しつつ暴走を防ぐ)
+  var MAX_DIGITS = 12;      // 並べられる桁数の上限(電話番号なども想定しつつ暴走を防ぐ。「:」「-」も1字に数える)
   var MAX_DISP_EM = 3.2;    // 見せる数字の最大サイズ(桁が増えたら自動で縮めて画面に収める)
   var MIN_DISP_EM = 1.4;
 
@@ -101,7 +101,9 @@
       '#scr-number .number-key{ grid-column:span 2; min-height:64px; min-width:44px; border:2px solid var(--brand);' +
         ' background:var(--card); color:var(--ink); border-radius:14px; font-size:1.9em;' +
         ' font-weight:700; font-family:inherit; font-variant-numeric:tabular-nums; }' +
-      '#scr-number .number-key.wide{ grid-column:span 3; }';
+      '#scr-number .number-key.wide{ grid-column:span 3; }' +
+      /* 「:」(じこく 14:30)と「-」(でんわ 03-1234)の記号キー。数字より少し控えめな色にして、数字と見まちがえない */
+      '#scr-number .number-key.sym{ border-color:var(--line); color:var(--sub); }';
 
     var st = document.createElement('style');
     st.id = 'css-number';
@@ -182,10 +184,11 @@
       }
       card.appendChild(ctrl);
 
-      /* すうじ盤(1〜9＋最下段は 0 と 00 を横1.5倍で2つ) */
+      /* すうじ盤(1〜9＋0 と 00 を横1.5倍で2つ＋その下に「:」と「-」を横1.5倍で2つ。2026-11-11) */
       var pad = el('div', 'number-pad');
-      ['1','2','3','4','5','6','7','8','9','0','00'].forEach(function(d){
-        var k = el('button', 'number-key' + (d === '0' || d === '00' ? ' wide' : ''), d);
+      ['1','2','3','4','5','6','7','8','9','0','00',':','-'].forEach(function(d){
+        var isSym = (d === ':' || d === '-');
+        var k = el('button', 'number-key' + (d === '0' || d === '00' || isSym ? ' wide' : '') + (isSym ? ' sym' : ''), d);
         k.setAttribute('type', 'button');
         k.setAttribute('aria-label', d);
         Tap.bind(k, function(){ addDigit(d); });
@@ -234,7 +237,7 @@
       }
 
       function updateDots(){
-        var v = digits ? parseInt(digits, 10) : 0;
+        var v = (digits && /^[0-9]+$/.test(digits)) ? parseInt(digits, 10) : 0;   // 「14:30」「03-12」のような記号入りはドットを出さない
         var show = (v >= 1 && v <= DOT_CAP);
         if(countLbl) countLbl.classList.toggle('hidden', !show);
         dotsWrap.classList.toggle('hidden', !show);
@@ -253,6 +256,9 @@
 
       function addDigit(d){
         if(digits.length + d.length > MAX_DIGITS) return;   // 上限は静かに無視(急かさない・叱らない。00は2桁ぶん)
+        if(d === ':' || d === '-'){   // 記号は、先頭と、記号のすぐ後には入れない(静かに無視。「:」「-」を続けて押しても1つだけ)
+          if(!digits || /[:\-]$/.test(digits)) return;
+        }
         digits += d;
         updateAll();
       }
@@ -276,7 +282,7 @@
       function speakDigits(){
         if(!pref.tts || !digits) return;
         var tag2 = LOCALE[pref.lang] || 'en-US';
-        var txt2 = digits.split('').join(' ');
+        var txt2 = digits.split('').map(function(ch){ return (ch === ':' || ch === '-') ? ',' : ch; }).join(' ');   // 記号は読まずに間(ま)にする
         if(NATIVE_TTS){
           try{
             NATIVE_TTS.stop().catch(function(){}).then(function(){

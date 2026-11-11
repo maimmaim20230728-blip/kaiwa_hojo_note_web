@@ -11,7 +11,7 @@
      戻すは せっていの「本人使用モードに もどす」ボタンのみ。起動のたびに施錠から始める。 */
 (function(){
 
-const VER = '0.1.14';
+const VER = '0.1.15';
 const LS_PREF = 'kaiwa.pref.v1';
 
 /* 12言語対応(ja/en + de/fr/es/it/pt/nl/sv/ko/zh/ar)。翻訳テーブルは i18n.js。
@@ -102,7 +102,8 @@ function screenApi(){
     el: el,
     pref: Object.assign({}, pref),   // 読み取り専用スナップショット(画面側で書き換えても保存されない)
     toast: toast,
-    ask: askBox                      // 確かめの窓(2026-09-30)。ask(文, function(はい){...})。Play版はアプリの中の「いいえ / はい」・Web版は confirm
+    ask: askBox,                     // 確かめの窓(2026-09-30)。ask(文, function(はい){...})。Play版はアプリの中の「いいえ / はい」・Web版は confirm
+    isCreate: function(){ return !locked; }   // 作成モードか(ことばの「よく つかう ことば」の登録で使う・2026-11-11)
   };
 }
 function renderCategory(id){
@@ -123,6 +124,7 @@ function showScreen(id){
   for(const c of CATS){ const b = $('nav-' + c); if(b) b.classList.toggle('active', c === id); }
   const setBtn = $('nav-set'); if(setBtn) setBtn.classList.toggle('active', id === 'set');
   if(CATS.indexOf(id) >= 0) renderCategory(id);
+  if(id === 'set') refreshBkSize();   // かきだす前の「しゃしん ◯まい・やく ◯MB」(2026-11-11)
 }
 
 /* ホームの大ボタン(5カテゴリ)を作る。フッターナビと同じ showScreen(c) を呼ぶ=同じ行き先。
@@ -158,7 +160,7 @@ function applyLock(){
   const hh = $('hd-lock-hint'); if(hh) hh.classList.toggle('hidden', !locked);
   if(locked && currentScreen === 'set') showScreen('home');
 }
-function unlock(){ if(!locked) return; locked = false; applyLock(); toast(T('lock.unlocked')); }
+function unlock(){ if(!locked) return; locked = false; applyLock(); if(currentScreen === 'kana') renderCategory('kana'); toast(T('lock.unlocked')); }   // ことばは作成モードで登録欄が出るので描き直す
 function lock(){ locked = true; showScreen('home'); applyLock(); toast(T('lock.locked')); }
 let tapCount = 0, lastTap = 0;
 const TAP_WINDOW = 1200;
@@ -202,6 +204,7 @@ function applyI18n(){
   $('btn-vol').textContent = T('set.vols')[pref.vol];
   $('btn-tapn').textContent = pref.tapUnlock + T('lock.times');
   $('about-ver').textContent = 'v' + VER;
+  showBkSize();                                                         // 大きさの目安も訳し直す(数えなおしはしない)
   if(CATS.indexOf(currentScreen) >= 0) renderCategory(currentScreen);   // 表示中のカテゴリ画面も訳し直す
   if(guideOv) guideOv._draw();                                          // はじめての つかいかた も訳し直す(いまのページのまま)
 }
@@ -474,16 +477,64 @@ function sanitizeDict(list){
   });
   return out;
 }
+/* よく つかう ことば(screens/kana.js・kaiwa.words.v1)も機種変更のファイルに入れる(2026-11-11)。ver は 2 のまま・words を足しただけ
+   (前の版のファイルには words が無い=読んだときは いまの ことばを そのまま残す) */
+const LS_WORDS = 'kaiwa.words.v1';
+const WORDS_MAX = 30, WORD_LEN = 40;   // screens/kana.js と同じ
+function sanitizeWords(list){
+  const out = [];
+  list.forEach(c => {
+    if(out.length >= WORDS_MAX || !c || typeof c !== 'object' || typeof c.text !== 'string') return;
+    const t = c.text.trim().slice(0, WORD_LEN);
+    if(t) out.push({ id:'w' + (out.length + 1), text:t });
+  });
+  return out;
+}
+function backupData(){
+  const dict = loadJSON(LS_DICT), words = loadJSON(LS_WORDS);
+  return { app:'kaiwa_hojo_note', ver:2, prefs: pref, dict: Array.isArray(dict) ? dict : [], words: Array.isArray(words) ? words : [] };
+}
+/* かきだす前の大きさの目安(2026-11-11)。写真が多いとファイルが大きくなり、メールなどの共有先で失敗しやすい。
+   しゃしんの まい数と、かきだすファイルの おおよその バイト数(UTF-8)を数える。設定を開いたとき・書きかえたときだけ数える(毎回は数えない) */
+function utf8Len(str){
+  let n = 0;
+  for(let i = 0; i < str.length; i++){
+    const c = str.charCodeAt(i);
+    if(c < 0x80) n += 1;
+    else if(c < 0x800) n += 2;
+    else if(c >= 0xD800 && c <= 0xDBFF){ n += 4; i++; }
+    else n += 3;
+  }
+  return n;
+}
+let bkInfo = null;   // { n:しゃしんの まい数, bytes:ファイルの おおよその大きさ }
+function refreshBkSize(){
+  try{
+    const d = backupData();
+    bkInfo = { n: d.dict.length, bytes: utf8Len(JSON.stringify(d)) };
+  }catch(_){ bkInfo = null; }
+  showBkSize();
+}
+function showBkSize(){
+  const e = $('bk-size');
+  if(!e) return;
+  if(!bkInfo || !bkInfo.n){ e.textContent = ''; e.classList.add('hidden'); return; }   // 写真が無いときは出さない(せっていだけの小さなファイル)
+  const mb = Math.max(0.1, bkInfo.bytes / 1048576);
+  e.textContent = T('set.bkSize').split('{n}').join(String(bkInfo.n)).split('{mb}').join(mb.toFixed(1));
+  e.classList.remove('hidden');
+}
+/* かきだせた(共有先を選べた/ブラウザが保存を始めた)ことを覚える。しゃしんの「かきだして おくと…」の知らせを、書き出した人には もう出さない。端末の中のフラグだけ */
+const LS_BKDONE = 'kaiwa.bkdone.v1';
+function markExported(){ saveJSON(LS_BKDONE, true); }
 function exportBackup(){
-  const dict = loadJSON(LS_DICT);
-  const data = { app:'kaiwa_hojo_note', ver:2, prefs: pref, dict: Array.isArray(dict) ? dict : [] };
+  const data = backupData();
   const d = new Date();
   const fname = 'kaiwa-hojo-note-' + d.getFullYear() +
     String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.json';
   /* Play版(2026-09-30): 一時フォルダに書いて共有の画面へ。選べたら「かきだしました」・閉じたら何も出さない・書けなければ「かきだせませんでした」 */
   if(isNativeApp()){
     nativeSaveFile(fname, JSON.stringify(data), T('set.bkExport'), r => {
-      if(r === 'ok') toast(T('set.exported'));
+      if(r === 'ok'){ markExported(); toast(T('set.exported')); }
       else if(r === 'fail') toast(T('set.exportFail'));
     });
     return;
@@ -494,6 +545,7 @@ function exportBackup(){
   a.download = fname;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  markExported();
   toast(T('set.exported'));
 }
 function importBackup(e){
@@ -511,8 +563,13 @@ function importBackup(e){
         saveJSON(LS_PREF, pref);   // 写真が入りきらない: せっていも もとに もどす
         throw new Error('storage full');
       }
+      if(Array.isArray(d.words) && !saveJSON(LS_WORDS, sanitizeWords(d.words))){   // ことばなし(前の版)は いまの ことばのまま
+        saveJSON(LS_PREF, pref);
+        throw new Error('storage full');
+      }
       pref = np;
       applyAll();
+      refreshBkSize();
       toast(T('set.imported'));
     }catch(err){ toast(T('set.importFail')); }
   };
@@ -522,12 +579,12 @@ function importBackup(e){
 
 /* ---- トースト ---- */
 let toastTimer = 0;
-function toast(msg){
+function toast(msg, ms){   // ms=出しておく長さ(長い案内だけ長くする。ふつうは 1.6秒)
   const t = $('toast');
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+  toastTimer = setTimeout(() => t.classList.remove('show'), (ms > 0) ? ms : 1600);
 }
 
 /* ---- 初期化 ---- */

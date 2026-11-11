@@ -51,6 +51,12 @@
     '#scr-yesno .yesno-yes{ background:#1f8a4c; }' +      /* はい=みどり(固定・機能色) */
     '#scr-yesno .yesno-no{ background:#c62f2f; }' +       /* いいえ=あか(固定・機能色) */
     '#scr-yesno .yesno-unknown{ background:#5f6b66; }' +  /* わからない=ニュートラルなはい */
+    /* ちょっとまって / もういちど / ゆっくり(2026-11-11)。はい・いいえ・わからない と色がまざらない琥珀・青・紫。白字との比は 5:1 以上 */
+    '#scr-yesno .yesno-wait{ background:#9c5700; }' +
+    '#scr-yesno .yesno-again{ background:#1f6aa5; }' +
+    '#scr-yesno .yesno-slow{ background:#6a4c93; }' +
+    '#scr-yesno .yesno-choices2{ margin-top:6px; padding-top:16px; border-top:2px solid var(--line); }' +
+    '#scr-yesno .yesno-choices2 .yesno-btn{ min-height:4.2em; }' +
     /* えらんでいる ボタンに はっきりした リング(どのテーマでも見えるよう --bg で すき間 → --ink) */
     '#scr-yesno .yesno-active{ box-shadow:0 0 0 4px var(--bg), 0 0 0 8px var(--ink); }' +
 
@@ -177,9 +183,16 @@
         { key:'no',      emoji:'👎', cls:'no' },       // 👎 いいえ
         { key:'unknown', emoji:'🤷', cls:'unknown' }   // 🤷 わからない
       ];
+      /* 会話をたすける3つ(失語症の会話で よく要る「待って」「もう一度」「ゆっくり」)。選んだときの動きは上の3択と同じ(押すと上に大きく出る・とりけせる) */
+      var CHOICES2 = [
+        { key:'wait',  emoji:'✋', cls:'wait' },    // ✋ ちょっとまって
+        { key:'again', emoji:'🔁', cls:'again' },   // 🔁 もういちど
+        { key:'slow',  emoji:'🐢', cls:'slow' }     // 🐢 ゆっくり
+      ];
       var btns = {};
       var choiceWrap = api.el('div', 'yesno-choices');
-      CHOICES.forEach(function(c){
+      var choiceWrap2 = api.el('div', 'yesno-choices yesno-choices2');
+      CHOICES.concat(CHOICES2).forEach(function(c){
         var word = api.T('screen.yesno.' + c.key);
         var b = api.el('button', 'yesno-btn yesno-' + c.cls);
         b.type = 'button';
@@ -190,13 +203,14 @@
         b.appendChild(api.el('span', 'yesno-label', word));
         Tap.bind(b, function(){ select(c); });
         btns[c.key] = b;
-        choiceWrap.appendChild(b);
+        (CHOICES2.indexOf(c) >= 0 ? choiceWrap2 : choiceWrap).appendChild(b);
       });
       root.appendChild(choiceWrap);
+      root.appendChild(choiceWrap2);
 
       /* ===== 状態と操作 ===== */
       function clearActive(){
-        CHOICES.forEach(function(c){ btns[c.key].classList.remove('yesno-active'); });
+        CHOICES.concat(CHOICES2).forEach(function(c){ btns[c.key].classList.remove('yesno-active'); });
       }
       function select(c){
         var word = api.T('screen.yesno.' + c.key);

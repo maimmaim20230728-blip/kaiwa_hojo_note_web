@@ -47,6 +47,22 @@
     try{ localStorage.setItem(LS_DICT, JSON.stringify(list)); return true; }
     catch(_){ return false; }                                     // 容量オーバー等は false(呼び出し側で通知して取消)
   }
+  /* 写真が たまったときの「かきだして おくと…」の知らせ(2026-11-11)。写真は この端末の中だけにあり、
+     機種変更用の「かきだす」を わすれると 端末をかえたとき ぜんぶ なくなる。5まい・20まい・50まいを こえたとき、それぞれ1回だけ そっと知らせる。
+     もう かきだした人(kaiwa.bkdone.v1 = app.js が かきだせたときに立てる)には出さない。叱らない言い方。端末の中のフラグだけ(送信なし) */
+  var LS_BKHINT = 'kaiwa.bkhint.v1', LS_BKDONE = 'kaiwa.bkdone.v1';
+  var HINT_AT = [5, 20, 50];
+  function backupHintDue(count){
+    try{
+      if(JSON.parse(localStorage.getItem(LS_BKDONE) || 'null') === true) return false;
+      var shown = parseInt(localStorage.getItem(LS_BKHINT) || '0', 10) || 0;
+      var thr = 0;
+      HINT_AT.forEach(function(n){ if(count >= n) thr = n; });
+      if(!thr || thr <= shown) return false;
+      localStorage.setItem(LS_BKHINT, String(thr));
+      return true;
+    }catch(_){ return false; }
+  }
   function nextId(list){
     var m = 0;
     list.forEach(function(c){ var n = parseInt(String(c && c.id).slice(1), 10); if(n > m) m = n; });
@@ -170,6 +186,9 @@
       'border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;',
       'font-family:inherit;font-size:1.02em;font-weight:700;}',
       '#scr-photo .photo-btn.primary{border-color:var(--brand);background:var(--brand);color:var(--on-brand);}',
+      '#scr-photo .photo-btn.is-off{opacity:.4;}',
+      /* よくつかう ものを先に ならべかえる(うえへ/したへ・2026-11-11)。いま何ばんめかを 「2 / 5」で見せる */
+      '#scr-photo .photo-pos{font-size:1.1em;font-weight:700;color:var(--sub);text-align:center;direction:ltr;unicode-bidi:isolate;margin:0 0 4px;}',
       '#scr-photo .photo-btn.danger{border-color:#cc3b30;color:#cc3b30;}',
       'body[data-theme="dark"] #scr-photo .photo-btn.danger{border-color:#ef9a9a;color:#ef9a9a;}',
       '#scr-photo .photo-ico{font-size:1.2em;line-height:1;}',
@@ -371,6 +390,10 @@
         d.push({ id: nextId(d), cat: _cat, label: label, img: data });
         if(!saveDict(d)){ closeCrop(); build(); api.toast(api.T('screen.photo.storageFull')); return; } // 容量オーバー=通知して取消
         closeCrop(); build(); api.toast(api.T('screen.photo.added'));
+        if(backupHintDue(d.length)){   // 「ついか しました」を読んでもらってから、少し長めに出す
+          var ht = setTimeout(function(){ api.toast(api.T('screen.photo.backupHint'), 6000); }, 1700);
+          if(ht && typeof ht.unref === 'function') ht.unref();
+        }
       }catch(_){ closeCrop(); api.toast(api.T('screen.photo.photoFail')); }
     }
 
@@ -388,8 +411,11 @@
     var api = _api, create = isCreateMode();
     var ov = elc('div', 'photo-ov photo-view');
     var inpNow = null;   // なまえ変更の欄(作成モードのとき・戻るボタンの書きかけの確かめに使う)
+    var moved = false;   // ならびかえた(とじたとき、うしろの 一覧を ならべなおす)
+    var posEl = null, upB = null, dnB = null;   // ならびかえの「2 / 5」と ボタン(renderEditControls が最初に呼ばれるより前に宣言する)
+    function closeViewNow(){ closeOverlay(); if(moved) build(); }
     /* 戻るボタン =「↩ とじる」と同じ。なまえ・ことばを書きかえて まだ ほぞん していなければ先に確かめる */
-    function closeView(){ askIfWritten(!!inpNow && (inpNow.value || '').trim() !== (entry.label || '').trim(), closeOverlay); }
+    function closeView(){ askIfWritten(!!inpNow && (inpNow.value || '').trim() !== (entry.label || '').trim(), closeViewNow); }
     ov._back = closeView;
 
     var img = elc('img', 'photo-big'); img.src = entry.img || ''; img.alt = entry.label || '';
@@ -414,15 +440,48 @@
     }
 
     var crow = elc('div', 'photo-row');
-    crow.appendChild(iconBtn('photo-btn', '↩', 'screen.photo.close', closeOverlay));
+    crow.appendChild(iconBtn('photo-btn', '↩', 'screen.photo.close', closeViewNow));
     ov.appendChild(crow);
 
     openOverlay(ov);
     /* 自動のよみあげは openOverlay の後(openOverlay が中で closeOverlay=stopSpeak を呼ぶため、前だと直後に取り消される) */
     if(api.pref.tts && entry.label) speak(entry.label, api.pref.lang);
 
+    /* ならびかえ(作成モードだけ・2026-11-11)。「うえへ / したへ」の ボタンで 1つずつ(ドラッグは使わない=片麻痺でも押せる)。
+       ひとつ前・ひとつ後ろの おなじカテゴリの写真と入れかえる。いま何ばんめかを「2 / 5」で見せる。ならびは かきだすファイルにも入る */
+    function posInfo(){
+      var d = loadDict(), idxs = [], pos = -1;
+      for(var i = 0; i < d.length; i++){
+        if(d[i] && d[i].cat === entry.cat){ if(d[i].id === entry.id) pos = idxs.length; idxs.push(i); }
+      }
+      return { d: d, idxs: idxs, pos: pos };
+    }
+    function updatePos(){
+      if(!posEl) return;
+      var p = posInfo();
+      posEl.textContent = (p.pos + 1) + ' / ' + p.idxs.length;
+      upB.classList.toggle('is-off', p.pos <= 0);
+      dnB.classList.toggle('is-off', p.pos < 0 || p.pos >= p.idxs.length - 1);
+    }
+    function moveBy(dir){
+      var p = posInfo(), np = p.pos + dir;
+      if(p.pos < 0 || np < 0 || np >= p.idxs.length) return;   // はしの ときは なにもしない(叱らない)
+      var a = p.idxs[p.pos], b = p.idxs[np], tmp = p.d[a];
+      p.d[a] = p.d[b]; p.d[b] = tmp;
+      if(!saveDict(p.d)){ api.toast(api.T('screen.photo.storageFull')); return; }
+      moved = true;
+      updatePos();
+    }
     function renderEditControls(){
       edit.textContent = '';
+      posEl = elc('div', 'photo-pos'); posEl.setAttribute('aria-live', 'polite');
+      edit.appendChild(posEl);
+      var mrow = elc('div', 'photo-row');
+      upB = iconBtn('photo-btn', '⬆', 'screen.photo.moveUp', function(){ moveBy(-1); });
+      dnB = iconBtn('photo-btn', '⬇', 'screen.photo.moveDown', function(){ moveBy(1); });
+      mrow.appendChild(upB); mrow.appendChild(dnB);
+      edit.appendChild(mrow);
+      updatePos();
       edit.appendChild(elc('div', 'photo-cap', api.T('screen.photo.labelLabel')));
       var inp = elc('input', 'photo-input'); inp.type = 'text'; inp.maxLength = 60;
       inp.value = entry.label || '';
@@ -483,6 +542,7 @@
     /* Android の戻るボタン(Play版だけ・app.js の onBack から・2026-09-30)。
        大きく見せる画面・とりこみの画面が出ていれば、その画面の「とじる/やめる」と同じ動きで閉じて true(=ここで終わり)。
        出ていなければ false(=app.js がホームへ) */
+    backupHintDue: backupHintDue,   // 写真の枚数を渡すと、知らせを出す時なら true(1回だけ。_smoke.js から確かめる)
     back: function(){
       if(!_overlay || !_overlay.parentNode) return false;
       if(typeof _overlay._back === 'function') _overlay._back(); else closeOverlay();

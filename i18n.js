@@ -64,7 +64,8 @@ var ja = {
     saveFail:'ほぞん できませんでした',
     exportFail:'かきだせませんでした',
     privacy:'プライバシーポリシー',
-    credit:'アプリ開発：介護と支援の相談どころ そよぎ'
+    credit:'アプリ開発：介護と支援の相談どころ そよぎ',
+    bkSize:'しゃしん {n}まい・やく {mb}MB'
   },
   /* 確かめの窓のボタン(app.js askBox・Play版の戻るボタンで使う・2026-09-30) */
   common: {
@@ -83,7 +84,10 @@ var ja = {
       prompt:'したから えらんでください',
       selecting:'これを えらんでいます',
       cancel:'とりけす',
-      cleared:'とりけしました'
+      cleared:'とりけしました',
+      wait:'ちょっと まってください',
+      again:'もういちど おねがいします',
+      slow:'ゆっくり おねがいします'
     },
     health: {
       title:'たいちょう・いたみ',
@@ -130,7 +134,10 @@ var ja = {
       deleted:'けしました',
       storageFull:'きおくが いっぱいで ついか できませんでした',
       photoFail:'しゃしんを よみこめませんでした',
-      backConfirm:'かいた なまえ・ことばは、まだ ほぞん して いません。やめて もどりますか?'
+      backConfirm:'かいた なまえ・ことばは、まだ ほぞん して いません。やめて もどりますか?',
+      backupHint:'かきだして おくと、きしゅへんこうでも しゃしんが のこります',
+      moveUp:'うえへ',
+      moveDown:'したへ'
     },
     number: {
       title:'すうじ・じかん',
@@ -151,7 +158,16 @@ var ja = {
       say:'よみあげ',
       space:'空白',
       cleared:'ぜんぶ けしました。「もどす」で もどせます',
-      restored:'もどしました'
+      restored:'もどしました',
+      wordsTitle:'よく つかう ことば',
+      wordsGuide:'よく つかう ことばを とうろくして おくと、1かい おすだけで みせられます',
+      wordsPlaceholder:'ことばを かいてください',
+      wordsAdd:'ついか',
+      wordsDel:'けす',
+      wordsDelConfirm:'この ことばを けしますか',
+      wordsAdded:'ついか しました',
+      wordsDeleted:'けしました',
+      wordsFull:'これ いじょうは とうろく できません'
     }
   },
   /* はじめての つかいかた(app.js openGuide・初回に必ず出す・2026-09-30)。heads と bodies は同じ数。{n} は app.js が作成モードに はいる タップの回数に置きかえる。
@@ -237,7 +253,8 @@ var en = {
     saveFail:'Could not save',
     exportFail:'Could not export',
     privacy:'Privacy Policy',
-    credit:'App by: Soyogi (Care & Support Consultation)'
+    credit:'App by: Soyogi (Care & Support Consultation)',
+    bkSize:'Photos: {n}, about {mb} MB'
   },
   common: {
     yes:'Yes',
@@ -252,7 +269,10 @@ var en = {
       prompt:'Choose below',
       selecting:'I\'m choosing this',
       cancel:'Cancel',
-      cleared:'Cleared'
+      cleared:'Cleared',
+      wait:'Please wait a moment',
+      again:'Please say it again',
+      slow:'Please speak slowly'
     },
     health: {
       title:'Condition / Pain',
@@ -299,7 +319,10 @@ var en = {
       deleted:'Deleted',
       storageFull:'Storage is full, could not add',
       photoFail:'Could not load the photo',
-      backConfirm:'The name or word you wrote is not saved yet. Cancel and go back?'
+      backConfirm:'The name or word you wrote is not saved yet. Cancel and go back?',
+      backupHint:'If you export a backup, your photos will stay when you change phones',
+      moveUp:'Move up',
+      moveDown:'Move down'
     },
     number: {
       title:'Numbers / Time',
@@ -320,7 +343,16 @@ var en = {
       say:'Read aloud',
       space:'Space',
       cleared:'Cleared. Tap "Undo" to bring it back.',
-      restored:'Restored'
+      restored:'Restored',
+      wordsTitle:'Words I use often',
+      wordsGuide:'Save words you use often and show them with one tap',
+      wordsPlaceholder:'Write a word or phrase',
+      wordsAdd:'Add',
+      wordsDel:'Delete',
+      wordsDelConfirm:'Delete this word?',
+      wordsAdded:'Added',
+      wordsDeleted:'Deleted',
+      wordsFull:'No more can be saved'
     }
   },
   "guide": {
@@ -426,7 +458,8 @@ var de = {
     "saveFail": "Speichern fehlgeschlagen",
     "exportFail": "Export fehlgeschlagen",
     "privacy": "Datenschutzerklärung",
-    "credit": "App von: Soyogi (Beratung für Pflege und Unterstützung)"
+    "credit": "App von: Soyogi (Beratung für Pflege und Unterstützung)",
+    "bkSize": "Fotos: {n}, ca. {mb} MB"
   },
   "common": {
     "yes": "Ja",
@@ -441,7 +474,10 @@ var de = {
       "prompt": "Bitte unten wählen",
       "selecting": "Ich wähle das",
       "cancel": "Zurücknehmen",
-      "cleared": "Zurückgenommen"
+      "cleared": "Zurückgenommen",
+      "wait": "Bitte einen Moment warten",
+      "again": "Bitte noch einmal",
+      "slow": "Bitte langsam"
     },
     "health": {
       "title": "Befinden / Schmerz",
@@ -503,7 +539,10 @@ var de = {
       "deleted": "Gelöscht",
       "storageFull": "Speicher voll, konnte nicht hinzufügen",
       "photoFail": "Foto konnte nicht geladen werden",
-      "backConfirm": "Der geschriebene Name bzw. das Wort ist noch nicht gespeichert. Abbrechen und zurückgehen?"
+      "backConfirm": "Der geschriebene Name bzw. das Wort ist noch nicht gespeichert. Abbrechen und zurückgehen?",
+      "backupHint": "Wenn Sie eine Sicherung exportieren, bleiben die Fotos beim Handywechsel erhalten",
+      "moveUp": "Nach oben",
+      "moveDown": "Nach unten"
     },
     "number": {
       "title": "Zahlen / Zeit",
@@ -527,7 +566,16 @@ var de = {
       "say": "Vorlesen",
       "space": "Leerzeichen",
       "cleared": "Alles gelöscht. Mit „Rückgängig“ zurückholen.",
-      "restored": "Wiederhergestellt"
+      "restored": "Wiederhergestellt",
+      "wordsTitle": "Oft genutzte Wörter",
+      "wordsGuide": "Speichern Sie oft genutzte Wörter und zeigen Sie sie mit einem Tippen",
+      "wordsPlaceholder": "Wort oder Satz eingeben",
+      "wordsAdd": "Hinzufügen",
+      "wordsDel": "Löschen",
+      "wordsDelConfirm": "Dieses Wort löschen?",
+      "wordsAdded": "Hinzugefügt",
+      "wordsDeleted": "Gelöscht",
+      "wordsFull": "Es kann nichts mehr gespeichert werden"
     }
   },
   "guide": {
@@ -633,7 +681,8 @@ var fr = {
     "saveFail": "Enregistrement impossible",
     "exportFail": "Exportation impossible",
     "privacy": "Politique de confidentialité",
-    "credit": "Application développée par : SOYOGI (Conseil en soins et accompagnement)"
+    "credit": "Application développée par : SOYOGI (Conseil en soins et accompagnement)",
+    "bkSize": "Photos : {n}, environ {mb} Mo"
   },
   "common": {
     "yes": "Oui",
@@ -648,7 +697,10 @@ var fr = {
       "prompt": "Choisissez ci-dessous",
       "selecting": "Je choisis ceci",
       "cancel": "Annuler",
-      "cleared": "Annulé"
+      "cleared": "Annulé",
+      "wait": "Un instant, s'il vous plaît",
+      "again": "Encore une fois, s'il vous plaît",
+      "slow": "Plus lentement, s'il vous plaît"
     },
     "health": {
       "title": "État / Douleur",
@@ -710,7 +762,10 @@ var fr = {
       "deleted": "Supprimé",
       "storageFull": "Mémoire pleine, ajout impossible",
       "photoFail": "Impossible de charger la photo",
-      "backConfirm": "Le nom ou le mot écrit n'est pas encore enregistré. Annuler et revenir en arrière ?"
+      "backConfirm": "Le nom ou le mot écrit n'est pas encore enregistré. Annuler et revenir en arrière ?",
+      "backupHint": "Si vous exportez une sauvegarde, vos photos seront conservées au changement de téléphone",
+      "moveUp": "Monter",
+      "moveDown": "Descendre"
     },
     "number": {
       "title": "Chiffres / Heure",
@@ -734,7 +789,16 @@ var fr = {
       "say": "Lecture vocale",
       "space": "Espace",
       "cleared": "Tout effacé. Appuyez sur « Annuler » pour rétablir.",
-      "restored": "Rétabli"
+      "restored": "Rétabli",
+      "wordsTitle": "Mots utilisés souvent",
+      "wordsGuide": "Enregistrez les mots que vous utilisez souvent et montrez-les d'un seul toucher",
+      "wordsPlaceholder": "Écrivez un mot ou une phrase",
+      "wordsAdd": "Ajouter",
+      "wordsDel": "Supprimer",
+      "wordsDelConfirm": "Supprimer ce mot ?",
+      "wordsAdded": "Ajouté",
+      "wordsDeleted": "Supprimé",
+      "wordsFull": "Impossible d'en enregistrer davantage"
     }
   },
   "guide": {
@@ -840,7 +904,8 @@ var es = {
     "saveFail": "No se pudo guardar",
     "exportFail": "No se pudo exportar",
     "privacy": "Política de privacidad",
-    "credit": "Aplicación de: SOYOGI (Consultas de Cuidado y Apoyo)"
+    "credit": "Aplicación de: SOYOGI (Consultas de Cuidado y Apoyo)",
+    "bkSize": "Fotos: {n}, unos {mb} MB"
   },
   "common": {
     "yes": "Sí",
@@ -855,7 +920,10 @@ var es = {
       "prompt": "Elija abajo",
       "selecting": "Estoy eligiendo esto",
       "cancel": "Cancelar",
-      "cleared": "Cancelado"
+      "cleared": "Cancelado",
+      "wait": "Un momento, por favor",
+      "again": "Otra vez, por favor",
+      "slow": "Más despacio, por favor"
     },
     "health": {
       "title": "Estado / Dolor",
@@ -917,7 +985,10 @@ var es = {
       "deleted": "Borrado",
       "storageFull": "El almacenamiento está lleno, no se pudo añadir",
       "photoFail": "No se pudo cargar la foto",
-      "backConfirm": "El nombre o la palabra que escribió aún no se ha guardado. ¿Cancelar y volver?"
+      "backConfirm": "El nombre o la palabra que escribió aún no se ha guardado. ¿Cancelar y volver?",
+      "backupHint": "Si exporta una copia de seguridad, sus fotos se conservarán al cambiar de teléfono",
+      "moveUp": "Subir",
+      "moveDown": "Bajar"
     },
     "number": {
       "title": "Números / Hora",
@@ -941,7 +1012,16 @@ var es = {
       "say": "Lectura en voz alta",
       "space": "Espacio",
       "cleared": "Todo borrado. Toque «Deshacer» para recuperarlo.",
-      "restored": "Restaurado"
+      "restored": "Restaurado",
+      "wordsTitle": "Palabras de uso frecuente",
+      "wordsGuide": "Guarde las palabras que usa a menudo y muéstrelas con un toque",
+      "wordsPlaceholder": "Escriba una palabra o frase",
+      "wordsAdd": "Añadir",
+      "wordsDel": "Borrar",
+      "wordsDelConfirm": "¿Borrar esta palabra?",
+      "wordsAdded": "Añadido",
+      "wordsDeleted": "Borrado",
+      "wordsFull": "No se pueden guardar más"
     }
   },
   "guide": {
@@ -1047,7 +1127,8 @@ var it = {
     "saveFail": "Impossibile salvare",
     "exportFail": "Impossibile esportare",
     "privacy": "Informativa sulla privacy",
-    "credit": "App di: SOYOGI (sportello di assistenza e supporto)"
+    "credit": "App di: SOYOGI (sportello di assistenza e supporto)",
+    "bkSize": "Foto: {n}, circa {mb} MB"
   },
   "common": {
     "yes": "Sì",
@@ -1062,7 +1143,10 @@ var it = {
       "prompt": "Scegli qui sotto",
       "selecting": "Sto scegliendo questo",
       "cancel": "Annulla",
-      "cleared": "Annullato"
+      "cleared": "Annullato",
+      "wait": "Un momento, per favore",
+      "again": "Ancora una volta, per favore",
+      "slow": "Più piano, per favore"
     },
     "health": {
       "title": "Condizione / Dolore",
@@ -1124,7 +1208,10 @@ var it = {
       "deleted": "Eliminato",
       "storageFull": "Memoria piena, impossibile aggiungere",
       "photoFail": "Impossibile caricare la foto",
-      "backConfirm": "Il nome o la parola scritti non sono ancora salvati. Annullare e tornare indietro?"
+      "backConfirm": "Il nome o la parola scritti non sono ancora salvati. Annullare e tornare indietro?",
+      "backupHint": "Se esporti un backup, le foto restano anche quando cambi telefono",
+      "moveUp": "Sposta su",
+      "moveDown": "Sposta giù"
     },
     "number": {
       "title": "Numeri / Ora",
@@ -1148,7 +1235,16 @@ var it = {
       "say": "Lettura vocale",
       "space": "Spazio",
       "cleared": "Tutto cancellato. Tocca \"Annulla\" per ripristinare.",
-      "restored": "Ripristinato"
+      "restored": "Ripristinato",
+      "wordsTitle": "Parole usate spesso",
+      "wordsGuide": "Salva le parole che usi spesso e mostrale con un tocco",
+      "wordsPlaceholder": "Scrivi una parola o una frase",
+      "wordsAdd": "Aggiungi",
+      "wordsDel": "Elimina",
+      "wordsDelConfirm": "Eliminare questa parola?",
+      "wordsAdded": "Aggiunto",
+      "wordsDeleted": "Eliminato",
+      "wordsFull": "Non se ne possono salvare altre"
     }
   },
   "guide": {
@@ -1254,7 +1350,8 @@ var pt = {
     "saveFail": "Não foi possível guardar",
     "exportFail": "Não foi possível exportar",
     "privacy": "Política de Privacidade",
-    "credit": "Aplicativo por: Soyogi (Consultoria de Cuidado e Apoio)"
+    "credit": "Aplicativo por: Soyogi (Consultoria de Cuidado e Apoio)",
+    "bkSize": "Fotos: {n}, cerca de {mb} MB"
   },
   "common": {
     "yes": "Sim",
@@ -1269,7 +1366,10 @@ var pt = {
       "prompt": "Escolha abaixo",
       "selecting": "Estou escolhendo isto",
       "cancel": "Cancelar",
-      "cleared": "Cancelado"
+      "cleared": "Cancelado",
+      "wait": "Um momento, por favor",
+      "again": "Mais uma vez, por favor",
+      "slow": "Mais devagar, por favor"
     },
     "health": {
       "title": "Estado / Dor",
@@ -1331,7 +1431,10 @@ var pt = {
       "deleted": "Apagado",
       "storageFull": "A memória está cheia, não foi possível adicionar",
       "photoFail": "Não foi possível carregar a foto",
-      "backConfirm": "O nome ou a palavra que você escreveu ainda não foi salvo. Cancelar e voltar?"
+      "backConfirm": "O nome ou a palavra que você escreveu ainda não foi salvo. Cancelar e voltar?",
+      "backupHint": "Se exportar uma cópia de segurança, as fotos serão mantidas ao trocar de telefone",
+      "moveUp": "Subir",
+      "moveDown": "Descer"
     },
     "number": {
       "title": "Números / Hora",
@@ -1355,7 +1458,16 @@ var pt = {
       "say": "Ler em voz alta",
       "space": "Espaço",
       "cleared": "Tudo apagado. Toque em \"Desfazer\" para recuperar.",
-      "restored": "Recuperado"
+      "restored": "Recuperado",
+      "wordsTitle": "Palavras usadas com frequência",
+      "wordsGuide": "Salve as palavras que mais usa e mostre-as com um toque",
+      "wordsPlaceholder": "Escreva uma palavra ou frase",
+      "wordsAdd": "Adicionar",
+      "wordsDel": "Apagar",
+      "wordsDelConfirm": "Apagar esta palavra?",
+      "wordsAdded": "Adicionado",
+      "wordsDeleted": "Apagado",
+      "wordsFull": "Não é possível salvar mais"
     }
   },
   "guide": {
@@ -1461,7 +1573,8 @@ var nl = {
     "saveFail": "Opslaan mislukt",
     "exportFail": "Exporteren mislukt",
     "privacy": "Privacybeleid",
-    "credit": "App door: Soyogi (Zorg- en ondersteuningsadvies)"
+    "credit": "App door: Soyogi (Zorg- en ondersteuningsadvies)",
+    "bkSize": "Foto's: {n}, ongeveer {mb} MB"
   },
   "common": {
     "yes": "Ja",
@@ -1476,7 +1589,10 @@ var nl = {
       "prompt": "Kies hieronder",
       "selecting": "Ik kies dit",
       "cancel": "Annuleren",
-      "cleared": "Geannuleerd"
+      "cleared": "Geannuleerd",
+      "wait": "Een ogenblik, alstublieft",
+      "again": "Nog een keer, alstublieft",
+      "slow": "Langzamer, alstublieft"
     },
     "health": {
       "title": "Toestand / Pijn",
@@ -1538,7 +1654,10 @@ var nl = {
       "deleted": "Verwijderd",
       "storageFull": "Opslag is vol, toevoegen niet gelukt",
       "photoFail": "Foto laden mislukt",
-      "backConfirm": "De geschreven naam of het woord is nog niet opgeslagen. Annuleren en teruggaan?"
+      "backConfirm": "De geschreven naam of het woord is nog niet opgeslagen. Annuleren en teruggaan?",
+      "backupHint": "Als u een back-up exporteert, blijven uw foto's behouden bij een nieuwe telefoon",
+      "moveUp": "Omhoog",
+      "moveDown": "Omlaag"
     },
     "number": {
       "title": "Cijfers / Tijd",
@@ -1562,7 +1681,16 @@ var nl = {
       "say": "Voorlezen",
       "space": "Spatie",
       "cleared": "Alles gewist. Tik op \"Ongedaan maken\" om het terug te halen.",
-      "restored": "Teruggehaald"
+      "restored": "Teruggehaald",
+      "wordsTitle": "Veelgebruikte woorden",
+      "wordsGuide": "Bewaar woorden die u vaak gebruikt en toon ze met één tik",
+      "wordsPlaceholder": "Schrijf een woord of zin",
+      "wordsAdd": "Toevoegen",
+      "wordsDel": "Verwijderen",
+      "wordsDelConfirm": "Dit woord verwijderen?",
+      "wordsAdded": "Toegevoegd",
+      "wordsDeleted": "Verwijderd",
+      "wordsFull": "Er kunnen geen woorden meer worden opgeslagen"
     }
   },
   "guide": {
@@ -1668,7 +1796,8 @@ var sv = {
     "saveFail": "Kunde inte spara",
     "exportFail": "Kunde inte exportera",
     "privacy": "Integritetspolicy",
-    "credit": "App av: Soyogi (Rådgivning för vård och stöd)"
+    "credit": "App av: Soyogi (Rådgivning för vård och stöd)",
+    "bkSize": "Foton: {n}, cirka {mb} MB"
   },
   "common": {
     "yes": "Ja",
@@ -1683,7 +1812,10 @@ var sv = {
       "prompt": "Välj nedan",
       "selecting": "Jag väljer det här",
       "cancel": "Avbryt",
-      "cleared": "Rensat"
+      "cleared": "Rensat",
+      "wait": "Vänta ett ögonblick, tack",
+      "again": "En gång till, tack",
+      "slow": "Långsammare, tack"
     },
     "health": {
       "title": "Mående / Smärta",
@@ -1745,7 +1877,10 @@ var sv = {
       "deleted": "Borttaget",
       "storageFull": "Lagringen är full, kunde inte lägga till",
       "photoFail": "Kunde inte läsa in fotot",
-      "backConfirm": "Namnet eller ordet du skrev är inte sparat än. Vill du avbryta och gå tillbaka?"
+      "backConfirm": "Namnet eller ordet du skrev är inte sparat än. Vill du avbryta och gå tillbaka?",
+      "backupHint": "Om du exporterar en säkerhetskopia finns fotona kvar när du byter telefon",
+      "moveUp": "Flytta upp",
+      "moveDown": "Flytta ner"
     },
     "number": {
       "title": "Siffror / Tid",
@@ -1769,7 +1904,16 @@ var sv = {
       "say": "Läs upp",
       "space": "Mellanslag",
       "cleared": "Rensat. Tryck på \"Ångra\" för att få tillbaka.",
-      "restored": "Återställt"
+      "restored": "Återställt",
+      "wordsTitle": "Ofta använda ord",
+      "wordsGuide": "Spara ord du ofta använder och visa dem med en tryckning",
+      "wordsPlaceholder": "Skriv ett ord eller en fras",
+      "wordsAdd": "Lägg till",
+      "wordsDel": "Ta bort",
+      "wordsDelConfirm": "Ta bort det här ordet?",
+      "wordsAdded": "Tillagt",
+      "wordsDeleted": "Borttaget",
+      "wordsFull": "Det går inte att spara fler"
     }
   },
   "guide": {
@@ -1875,7 +2019,8 @@ var ko = {
     "saveFail": "저장하지 못했어요",
     "exportFail": "내보내지 못했어요",
     "privacy": "개인정보 처리방침",
-    "credit": "앱 개발: 돌봄과 지원 상담소 SOYOGI"
+    "credit": "앱 개발: 돌봄과 지원 상담소 SOYOGI",
+    "bkSize": "사진 {n}장, 약 {mb}MB"
   },
   "common": {
     "yes": "예",
@@ -1890,7 +2035,10 @@ var ko = {
       "prompt": "아래에서 골라 주세요",
       "selecting": "이것을 고르고 있어요",
       "cancel": "취소",
-      "cleared": "취소했어요"
+      "cleared": "취소했어요",
+      "wait": "잠깐만 기다려 주세요",
+      "again": "한 번 더 말해 주세요",
+      "slow": "천천히 말해 주세요"
     },
     "health": {
       "title": "몸 상태 · 통증",
@@ -1952,7 +2100,10 @@ var ko = {
       "deleted": "지웠어요",
       "storageFull": "저장 공간이 가득 차서 추가하지 못했어요",
       "photoFail": "사진을 불러오지 못했어요",
-      "backConfirm": "쓴 이름·낱말이 아직 저장되지 않았어요. 그만두고 돌아갈까요?"
+      "backConfirm": "쓴 이름·낱말이 아직 저장되지 않았어요. 그만두고 돌아갈까요?",
+      "backupHint": "내보내기로 저장해 두면 휴대폰을 바꿔도 사진이 남아요",
+      "moveUp": "위로",
+      "moveDown": "아래로"
     },
     "number": {
       "title": "숫자 · 시간",
@@ -1976,7 +2127,16 @@ var ko = {
       "say": "읽어 주기",
       "space": "띄어쓰기",
       "cleared": "전부 지웠어요. 「되돌리기」로 되살릴 수 있어요",
-      "restored": "되돌렸어요"
+      "restored": "되돌렸어요",
+      "wordsTitle": "자주 쓰는 말",
+      "wordsGuide": "자주 쓰는 말을 등록해 두면 한 번만 눌러서 보여 줄 수 있어요",
+      "wordsPlaceholder": "말을 적어 주세요",
+      "wordsAdd": "추가",
+      "wordsDel": "지우기",
+      "wordsDelConfirm": "이 말을 지울까요?",
+      "wordsAdded": "추가했어요",
+      "wordsDeleted": "지웠어요",
+      "wordsFull": "더 이상 등록할 수 없어요"
     }
   },
   "guide": {
@@ -2082,7 +2242,8 @@ var zh = {
     "saveFail": "无法保存",
     "exportFail": "无法导出",
     "privacy": "隐私政策",
-    "credit": "应用开发:介护与支援咨询处 SOYOGI"
+    "credit": "应用开发:介护与支援咨询处 SOYOGI",
+    "bkSize": "照片 {n} 张,约 {mb} MB"
   },
   "common": {
     "yes": "是",
@@ -2097,7 +2258,10 @@ var zh = {
       "prompt": "请从下方选择",
       "selecting": "正在选择这个",
       "cancel": "取消",
-      "cleared": "已取消"
+      "cleared": "已取消",
+      "wait": "请稍等一下",
+      "again": "请再说一遍",
+      "slow": "请慢一点说"
     },
     "health": {
       "title": "身体状况 / 疼痛",
@@ -2159,7 +2323,10 @@ var zh = {
       "deleted": "已删除",
       "storageFull": "存储空间已满,无法添加",
       "photoFail": "无法加载照片",
-      "backConfirm": "写的名称或词语还没有保存。要取消并返回吗?"
+      "backConfirm": "写的名称或词语还没有保存。要取消并返回吗?",
+      "backupHint": "先导出备份,换手机后照片也能保留",
+      "moveUp": "上移",
+      "moveDown": "下移"
     },
     "number": {
       "title": "数字 / 时间",
@@ -2183,7 +2350,16 @@ var zh = {
       "say": "朗读",
       "space": "空格",
       "cleared": "已全部删除。点按“撤销”可恢复",
-      "restored": "已恢复"
+      "restored": "已恢复",
+      "wordsTitle": "常用词语",
+      "wordsGuide": "先保存常用的词语,点一下就能展示给对方",
+      "wordsPlaceholder": "请输入词语或句子",
+      "wordsAdd": "添加",
+      "wordsDel": "删除",
+      "wordsDelConfirm": "要删除这个词语吗?",
+      "wordsAdded": "已添加",
+      "wordsDeleted": "已删除",
+      "wordsFull": "不能再保存了"
     }
   },
   "guide": {
@@ -2289,7 +2465,8 @@ var ar = {
     "saveFail": "تعذّر الحفظ",
     "exportFail": "تعذّر التصدير",
     "privacy": "سياسة الخصوصية",
-    "credit": "تطوير التطبيق: SOYOGI (مركز استشارات الرعاية والدعم)"
+    "credit": "تطوير التطبيق: SOYOGI (مركز استشارات الرعاية والدعم)",
+    "bkSize": "الصور: {n}، حوالي {mb} ميغابايت"
   },
   "common": {
     "yes": "نعم",
@@ -2304,7 +2481,10 @@ var ar = {
       "prompt": "اختر من الأسفل",
       "selecting": "أختار هذا",
       "cancel": "إلغاء",
-      "cleared": "تم الإلغاء"
+      "cleared": "تم الإلغاء",
+      "wait": "من فضلك انتظر قليلًا",
+      "again": "أعد ذلك مرة أخرى من فضلك",
+      "slow": "من فضلك تكلّم ببطء"
     },
     "health": {
       "title": "الحالة / الألم",
@@ -2366,7 +2546,10 @@ var ar = {
       "deleted": "تم الحذف",
       "storageFull": "الذاكرة ممتلئة، تعذّرت الإضافة",
       "photoFail": "تعذّر تحميل الصورة",
-      "backConfirm": "الاسم أو الكلمة التي كتبتها لم تُحفظ بعد. هل تريد الإلغاء والرجوع؟"
+      "backConfirm": "الاسم أو الكلمة التي كتبتها لم تُحفظ بعد. هل تريد الإلغاء والرجوع؟",
+      "backupHint": "إذا صدّرت نسخة احتياطية فستبقى صورك عند تغيير الهاتف",
+      "moveUp": "تحريك لأعلى",
+      "moveDown": "تحريك لأسفل"
     },
     "number": {
       "title": "أرقام / وقت",
@@ -2390,7 +2573,16 @@ var ar = {
       "say": "القراءة الصوتية",
       "space": "مسافة",
       "cleared": "تم المسح. اضغط «تراجع» لاستعادته.",
-      "restored": "تمت الاستعادة"
+      "restored": "تمت الاستعادة",
+      "wordsTitle": "كلمات أستخدمها كثيرًا",
+      "wordsGuide": "احفظ الكلمات التي تستخدمها كثيرًا وأظهرها بلمسة واحدة",
+      "wordsPlaceholder": "اكتب كلمة أو جملة",
+      "wordsAdd": "إضافة",
+      "wordsDel": "حذف",
+      "wordsDelConfirm": "هل تريد حذف هذه الكلمة؟",
+      "wordsAdded": "تمت الإضافة",
+      "wordsDeleted": "تم الحذف",
+      "wordsFull": "لا يمكن حفظ المزيد"
     }
   },
   "guide": {

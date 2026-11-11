@@ -140,7 +140,22 @@
       /* 「小」と「空白」は下段を伸びて埋める(ぴったり揃える・ヒロ指定2026-07-25)。゛゜は最小幅のまま */
       '#scr-kana .kana-space{ flex:1 1 0; min-width:84px; }' +
       '#scr-kana .kana-fn--wide{ flex:1 1 0; min-width:84px; }' +
-      '#scr-kana .kana-act--say{ border-color:var(--brand); color:var(--brand); }';
+      '#scr-kana .kana-act--say{ border-color:var(--brand); color:var(--brand); }' +
+      /* よく つかう ことば(2026-11-11)。大きな ボタンを ならべる。作成モードでは 右に けす ボタンと、とうろく欄 */
+      '#scr-kana .kana-words{ display:flex; flex-direction:column; gap:10px; padding:12px; border:2px solid var(--line); border-radius:14px; background:var(--card); }' +
+      '#scr-kana .kana-words-h{ display:flex; align-items:center; gap:8px; font-weight:700; color:var(--sub); font-size:.95em; }' +
+      '#scr-kana .kana-words-list{ display:flex; flex-direction:column; gap:8px; }' +
+      '#scr-kana .kana-word-row{ display:flex; gap:8px; align-items:stretch; }' +
+      '#scr-kana .kana-word{ flex:1 1 auto; min-height:56px; padding:8px 14px; border:2px solid var(--brand); border-radius:12px;' +
+        ' background:var(--card); color:var(--ink); font-family:inherit; font-size:1.3em; font-weight:700; text-align:center; word-break:break-word; overflow-wrap:anywhere; }' +
+      '#scr-kana .kana-word-del{ flex:0 0 auto; min-width:56px; min-height:56px; padding:4px 10px; border:2px solid var(--line); border-radius:12px;' +
+        ' background:var(--card); color:var(--sub); font-family:inherit; font-size:1.2em; display:flex; align-items:center; justify-content:center; }' +
+      '#scr-kana .kana-words-note{ color:var(--sub); font-size:.9em; margin:0; }' +
+      '#scr-kana .kana-word-add{ display:flex; gap:8px; align-items:stretch; }' +
+      '#scr-kana .kana-word-input{ flex:1 1 auto; min-width:0; min-height:52px; font-size:1.05em; font-family:inherit; padding:8px 12px;' +
+        ' border:2px solid var(--line); border-radius:12px; background:var(--card); color:var(--ink); }' +
+      '#scr-kana .kana-word-addbtn{ flex:0 0 auto; min-height:52px; padding:0 18px; border:2px solid var(--brand); border-radius:12px;' +
+        ' background:var(--brand); color:var(--on-brand); font-family:inherit; font-size:1.02em; font-weight:700; }';
     (document.head || document.documentElement).appendChild(s);
   }
 
@@ -190,6 +205,28 @@
     }catch(_){}
   }
 
+  /* ===== よく つかう ことば(家族・かいごの人が 作成モードで とうろく → 本人は 1タップで 見せられる。2026-11-11) =====
+     写真辞書(screens/photo.js)と同じ「作成モード / 本人使用モード」の分け方。端末の中(kaiwa.words.v1)だけに保存・送信なし。
+     とうろくは 30こまで・1つ 40もじまで。かきだすファイル(app.js)にも入る */
+  var LS_WORDS = 'kaiwa.words.v1';
+  var WORDS_MAX = 30, WORD_LEN = 40;
+  function loadWords(){
+    try{
+      var s = localStorage.getItem(LS_WORDS), a = s ? JSON.parse(s) : [];
+      if(!Array.isArray(a)) return [];
+      return a.filter(function(w){ return w && typeof w.text === 'string' && w.text; });
+    }catch(_){ return []; }
+  }
+  function saveWords(list){
+    try{ localStorage.setItem(LS_WORDS, JSON.stringify(list)); return true; }
+    catch(_){ return false; }
+  }
+  function nextWordId(list){
+    var m = 0;
+    list.forEach(function(w){ var n = parseInt(String(w && w.id).slice(1), 10); if(n > m) m = n; });
+    return 'w' + (m + 1);
+  }
+
   function dropLast(str){ var a = Array.from(str); a.pop(); return a.join(''); }
   function toggleLast(map){
     if(!map || !stripText) return;
@@ -201,8 +238,7 @@
     }
   }
 
-  window.KAIWA_SCREENS.register('kana', {
-    render: function(container, api){
+  function renderKana(container, api){
       injectCSS();
 
       var pref     = api.pref;
@@ -315,6 +351,80 @@
       if(ttsOK){ sayBtn = actBtn('🔊', 'say', say, 'kana-act--say'); actions.appendChild(sayBtn); }
       wrap.appendChild(actions);
 
+      /* ---- よく つかう ことば(上の「見せる欄」に 1タップで 出す。いまの 並びは「もどす」で もどせる) ---- */
+      var create = !!(api.isCreate && api.isCreate());
+      var words = loadWords();
+      function showWord(text){
+        clearedBuffer = stripText ? stripText : null;   // いま ならべている字が あれば「もどす」で 戻せる
+        stripText = text;
+        commit();
+        if(ttsOK) ttsSpeak(text, lang, pref.vol);
+      }
+      function redraw(){ container.textContent = ''; renderKana(container, api); }
+      if(words.length || create){                      // 本人使用モードで 1つも ないときは 欄ごと出さない
+        var box = api.el('div', 'kana-words');
+        if(showText){
+          var wh = api.el('div', 'kana-words-h');
+          var whi = api.el('span', null, '⭐'); whi.setAttribute('aria-hidden', 'true');
+          wh.appendChild(whi);
+          wh.appendChild(api.el('span', null, L('wordsTitle')));
+          box.appendChild(wh);
+        }
+        var list = api.el('div', 'kana-words-list');
+        list.setAttribute('aria-label', L('wordsTitle'));
+        words.forEach(function(w){
+          var row = api.el('div', 'kana-word-row');
+          var wb = api.el('button', 'kana-word', w.text);
+          wb.type = 'button';
+          wb.setAttribute('dir', 'auto');
+          Tap.bind(wb, function(){ showWord(w.text); });
+          row.appendChild(wb);
+          if(create){
+            var db = api.el('button', 'kana-word-del', '🗑');
+            db.type = 'button';
+            db.setAttribute('aria-label', L('wordsDel') + ': ' + w.text);
+            Tap.bind(db, function(){
+              api.ask(L('wordsDelConfirm'), function(yes){
+                if(!yes) return;
+                var rest = loadWords().filter(function(x){ return x.id !== w.id; });
+                if(!saveWords(rest)){ api.toast(api.T('set.saveFail')); return; }
+                api.toast(L('wordsDeleted'));
+                redraw();
+              }, true);
+            });
+            row.appendChild(db);
+          }
+          list.appendChild(row);
+        });
+        box.appendChild(list);
+        if(create){                                    // とうろく欄(作成モードだけ)
+          box.appendChild(api.el('p', 'kana-words-note', L('wordsGuide')));
+          var addRow = api.el('div', 'kana-word-add');
+          var inp = api.el('input', 'kana-word-input');
+          inp.type = 'text'; inp.maxLength = WORD_LEN;
+          inp.setAttribute('dir', 'auto');
+          inp.placeholder = L('wordsPlaceholder');
+          inp.setAttribute('aria-label', L('wordsPlaceholder'));
+          var ab = api.el('button', 'kana-word-addbtn', L('wordsAdd'));
+          ab.type = 'button';
+          function addWord(){
+            var t = String(inp.value || '').trim().slice(0, WORD_LEN);
+            if(!t) return;
+            var cur = loadWords();
+            if(cur.length >= WORDS_MAX){ api.toast(L('wordsFull')); return; }
+            cur.push({ id: nextWordId(cur), text: t });
+            if(!saveWords(cur)){ api.toast(api.T('set.saveFail')); return; }
+            api.toast(L('wordsAdded'));
+            redraw();
+          }
+          Tap.bind(ab, addWord);
+          inp.addEventListener('keydown', function(e){ if(e && e.key === 'Enter'){ if(e.preventDefault) e.preventDefault(); addWord(); } });
+          addRow.appendChild(inp); addRow.appendChild(ab);
+          box.appendChild(addRow);
+        }
+        wrap.appendChild(box);
+      }
+
       var grid = api.el('div', 'kana-grid' + (ja ? '' : ' kana-grid--auto'));
       if(rtl) grid.setAttribute('dir', 'rtl');                         // ar: 盤も右→左(先頭字が右上・右から左へ充填)
       if(ja){
@@ -338,6 +448,8 @@
 
       container.appendChild(wrap);
       commit();                                                        // 保持中の並びを反映して初期表示
-    }
+  }
+  window.KAIWA_SCREENS.register('kana', {
+    render: function(container, api){ renderKana(container, api); }
   });
 })();

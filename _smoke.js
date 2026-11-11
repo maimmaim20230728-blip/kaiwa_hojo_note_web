@@ -267,6 +267,159 @@ check('ja/enテーブルが両方読める', !!I18.ja && !!I18.en);
 check('5カテゴリぶん screen.* が両言語にある', ['yesno','health','photo','number','kana'].every(id => I18.ja.screen[id] && I18.en.screen[id]));
 check('KAIWA_SCREENSに5画面すべて登録されている', evalCtx('window.KAIWA_SCREENS.ids()').length === 5);
 
+/* ---- 2026-11-11 の追加(はい・いいえの3つ / すうじの「:」「-」/ 写真のならびかえ・かきだしの知らせ・大きさ / よく つかう ことば) ---- */
+function findAll(node, pred, out){
+  out = out || [];
+  if(pred(node)) out.push(node);
+  for(const c of node.children) findAll(c, pred, out);
+  return out;
+}
+const btnByText = (root, t) => findAll(root, n => n.tagName === 'BUTTON' && allText(n).indexOf(t) >= 0)[0];
+const byClass = (root, cls) => findAll(root, n => (' ' + n.className + ' ').indexOf(' ' + cls + ' ') >= 0);
+
+console.log('[9] はい・いいえ: ちょっとまって / もういちど / ゆっくり');
+tapEl(created['nav-yesno']);
+const WAITS = ['ちょっと まってください', 'もういちど おねがいします', 'ゆっくり おねがいします'];
+check('大ボタンが3つ増えている(はい・いいえ・わからない+3つ=6つ)', byClass(created['scr-yesno'], 'yesno-btn').length === 6);
+check('3つの ことばが出る', WAITS.every(w => !!btnByText(created['scr-yesno'], w)));
+const waitBtn = btnByText(created['scr-yesno'], WAITS[0]);
+tapEl(waitBtn);
+check('ちょっとまって を押すと えらんだ印が付く', waitBtn.classList.contains('yesno-active'));
+check('上の帯に えらんだ ことばが出る', byClass(created['scr-yesno'], 'yesno-sel-label')[0].textContent === WAITS[0]);
+tapEl(btnByText(created['scr-yesno'], 'とりけす'));
+check('とりけすで 印が消える', !waitBtn.classList.contains('yesno-active'));
+tapEl(btnByText(created['scr-yesno'], 'はい'));
+tapEl(btnByText(created['scr-yesno'], WAITS[2]));
+check('べつの ボタンを押すと 切りかわる(はい の印は消える)', !btnByText(created['scr-yesno'], 'はい').classList.contains('yesno-active') && btnByText(created['scr-yesno'], WAITS[2]).classList.contains('yesno-active'));
+
+console.log('[10] すうじ: 「:」(じこく)と「-」(でんわ)');
+tapEl(created['nav-number']);
+const key = d => findAll(created['scr-number'], n => n.tagName === 'BUTTON' && n.textContent === d)[0];
+const numDisp = () => byClass(created['scr-number'], 'number-display')[0].textContent;
+check('記号キーが2つ(「:」「-」)ある', !!key(':') && !!key('-'));
+tapEl(key(':'));
+check('先頭には「:」は入らない(静かに無視)', numDisp() === 'すうじを おしてください');
+['1', '4'].forEach(d => tapEl(key(d)));
+tapEl(key(':')); tapEl(key(':'));
+['3', '0'].forEach(d => tapEl(key(d)));
+check('14:30 のように見せられる(「:」を続けて押しても1つ)', numDisp() === '14:30');
+check('記号が入ると ドットは出さない', byClass(created['scr-number'], 'number-dots')[0].classList.contains('hidden'));
+tapEl(key('-')); tapEl(key('-'));
+check('「-」も続けて入らない', numDisp() === '14:30-');
+tapEl(findAll(created['scr-number'], n => n.tagName === 'BUTTON' && allText(n).indexOf('ぜんぶ けす') >= 0)[0]);
+['0', '3'].forEach(d => tapEl(key(d)));
+tapEl(key('-'));
+['1', '2'].forEach(d => tapEl(key(d)));
+check('03-12 のように でんわの 形も入る', numDisp() === '03-12');
+tapEl(key('0'));
+tapEl(findAll(created['scr-number'], n => n.tagName === 'BUTTON' && allText(n).indexOf('ぜんぶ けす') >= 0)[0]);
+['5'].forEach(d => tapEl(key(d)));
+check('数字だけなら ドットが出る(5=5こ)', !byClass(created['scr-number'], 'number-dots')[0].classList.contains('hidden'));
+tapEl(findAll(created['scr-number'], n => n.tagName === 'BUTTON' && allText(n).indexOf('ぜんぶ けす') >= 0)[0]);
+for(let i = 0; i < 12; i++) tapEl(key('1'));
+tapEl(key(':'));
+check('12字の上限は 記号にも効く', numDisp() === '111111111111');
+tapEl(findAll(created['scr-number'], n => n.tagName === 'BUTTON' && allText(n).indexOf('ぜんぶ けす') >= 0)[0]);
+
+console.log('[11] ひと・しゃしん: ならびかえ(うえへ/したへ)');
+const IMGX = 'data:image/jpeg;base64,/9j/AAAA';
+lsData['kaiwa.dict.v1'] = JSON.stringify([
+  { id:'p1', cat:'people', label:'いち', img:IMGX }, { id:'p2', cat:'food', label:'ごはん', img:IMGX },
+  { id:'p3', cat:'people', label:'に', img:IMGX }, { id:'p4', cat:'people', label:'さん', img:IMGX }]);
+tapEl(created['nav-photo']);
+const labelsOf = () => JSON.parse(lsData['kaiwa.dict.v1']).map(c => c.label).join(',');
+const cards = () => byClass(created['scr-photo'], 'photo-card');
+check('作成モードの一覧に ひと の3まいが ならぶ', cards().length === 3);
+tapEl(cards()[0]);
+let ov = byClass(created['scr-photo'], 'photo-ov')[0];
+check('開くと「1 / 3」と出る', byClass(ov, 'photo-pos')[0].textContent === '1 / 3');
+check('いちばん先頭の「うえへ」は押せない見た目', btnByText(ov, 'うえへ').classList.contains('is-off'));
+tapEl(btnByText(ov, 'うえへ'));
+check('先頭で「うえへ」を押しても何も変わらない', labelsOf() === 'いち,ごはん,に,さん');
+tapEl(btnByText(ov, 'したへ'));
+check('「したへ」で ひとつ後ろへ(ほかのカテゴリの順はそのまま)', labelsOf() === 'に,ごはん,いち,さん');
+check('ならびは端末に保存される・番号は「2 / 3」', byClass(ov, 'photo-pos')[0].textContent === '2 / 3' && JSON.parse(lsData['kaiwa.dict.v1'])[2].id === 'p1');
+tapEl(btnByText(ov, 'したへ'));
+check('いちばん後ろの「したへ」は押せない見た目', byClass(ov, 'photo-pos')[0].textContent === '3 / 3' && btnByText(ov, 'したへ').classList.contains('is-off'));
+tapEl(btnByText(ov, 'うえへ'));
+check('「うえへ」でもどせる', labelsOf() === 'に,ごはん,いち,さん');
+tapEl(btnByText(ov, 'とじる'));
+check('とじたあと 一覧が ならびなおる(先頭=に)', cards().length === 3 && byClass(cards()[0], 'photo-card-label')[0].textContent === 'に' && byClass(created['scr-photo'], 'photo-ov').length === 0);
+
+console.log('[12] ひと・しゃしん: かきだしの知らせ(5・20・50まいで1回ずつ・かきだした人には出さない)・かきだす前の大きさ');
+const photoMod = evalCtx('window.KAIWA_SCREENS.get("photo")');
+delete lsData['kaiwa.bkhint.v1']; delete lsData['kaiwa.bkdone.v1'];
+check('4まいでは知らせない', photoMod.backupHintDue(4) === false);
+check('5まいで1回だけ知らせる', photoMod.backupHintDue(5) === true && photoMod.backupHintDue(5) === false && photoMod.backupHintDue(6) === false);
+check('20まいで もう1回', photoMod.backupHintDue(20) === true && photoMod.backupHintDue(25) === false);
+lsData['kaiwa.bkdone.v1'] = 'true';
+check('かきだした人には 50まいでも出さない', photoMod.backupHintDue(50) === false);
+delete lsData['kaiwa.bkdone.v1'];
+tapEl(created['nav-set']);
+check('せってい画面に、写真のまい数と大きさの目安が出る', created['bk-size'].textContent.indexOf('しゃしん 4まい・やく') === 0 && !created['bk-size'].classList.contains('hidden'));
+lsData['kaiwa.dict.v1'] = '[]';
+tapEl(created['nav-photo']); tapEl(created['nav-set']);
+check('写真が0まいのときは 目安を出さない', created['bk-size'].classList.contains('hidden'));
+lsData['kaiwa.dict.v1'] = JSON.stringify([{ id:'p1', cat:'people', label:'', img:'data:image/jpeg;base64,' + 'A'.repeat(1048576) }]);
+tapEl(created['nav-photo']); tapEl(created['nav-set']);
+check('1MBの写真1まいなら「やく 1.0MB」', created['bk-size'].textContent === 'しゃしん 1まい・やく 1.0MB');
+created['set-lang'].value = 'en'; fire(created['set-lang'], 'change');
+check('ことばを変えると目安も訳しなおる', created['bk-size'].textContent === 'Photos: 1, about 1.0 MB');
+created['set-lang'].value = 'ja'; fire(created['set-lang'], 'change');
+check('かきだす前は「かきだした」しるしが無い', lsData['kaiwa.bkdone.v1'] === undefined);
+tapEl(byId('bk-export'));
+check('かきだしたら しるしが付く(知らせを もう出さない)', lsData['kaiwa.bkdone.v1'] === 'true');
+delete lsData['kaiwa.bkdone.v1'];
+lsData['kaiwa.dict.v1'] = '[]';
+
+console.log('[13] ことば: よく つかう ことば(作成モードで とうろく・本人は 1タップで見せる)');
+const wordsOf = () => JSON.parse(lsData['kaiwa.words.v1'] || '[]').map(w => w.text).join(',');
+delete lsData['kaiwa.words.v1'];
+tapEl(created['nav-kana']);
+check('作成モードでは とうろく欄(入力と「ついか」)が出る', byClass(created['scr-kana'], 'kana-word-input').length === 1 && !!btnByText(created['scr-kana'], 'ついか'));
+const addWordTxt = t => { byClass(created['scr-kana'], 'kana-word-input')[0].value = t; tapEl(btnByText(created['scr-kana'], 'ついか')); };
+addWordTxt('トイレに いきたい');
+addWordTxt('いたい');
+check('入力欄は とうろく後に空になる(作りなおし)', byClass(created['scr-kana'], 'kana-word-input')[0].value === '');
+addWordTxt('   ');
+check('2つ とうろくできる(空のままは入らない)', wordsOf() === 'トイレに いきたい,いたい');
+check('とうろくした ことばが画面に出る', byClass(created['scr-kana'], 'kana-word').length === 2);
+const longTxt = 'あ'.repeat(60);
+addWordTxt(longTxt);
+check('40もじまでに切る', JSON.parse(lsData['kaiwa.words.v1'])[2].text.length === 40);
+tapEl(byClass(created['scr-kana'], 'kana-word-del')[2]);
+check('けす(確かめは「はい」の扱い)で消える', wordsOf() === 'トイレに いきたい,いたい');
+const manyW = []; for(let i = 1; i <= 30; i++) manyW.push({ id:'w' + i, text:'こと' + i });
+lsData['kaiwa.words.v1'] = JSON.stringify(manyW);
+tapEl(created['nav-health']); tapEl(created['nav-kana']);
+addWordTxt('31ばんめ');
+check('30こまでで それ以上は入らない', JSON.parse(lsData['kaiwa.words.v1']).length === 30 && created['toast'].textContent === 'これ いじょうは とうろく できません');
+lsData['kaiwa.words.v1'] = JSON.stringify([{ id:'w1', text:'トイレに いきたい' }, { id:'w2', text:'いたい' }]);
+tapEl(created['nav-set']);
+tapEl(byId('bk-export'));
+const blobW = sandbox.__lastBlob ? JSON.parse(sandbox.__lastBlob.parts.join('')) : null;
+check('かきだすファイルに ことばも入る(ver は 2 のまま)', !!blobW && blobW.ver === 2 && Array.isArray(blobW.words) && blobW.words.length === 2 && blobW.words[1].text === 'いたい');
+fire(created['bk-file'], 'change', { target:{ files:[{ _text: JSON.stringify({ app:'kaiwa_hojo_note', ver:2, prefs:{ lang:'ja' }, dict:[],
+  words:[{ id:'zz', text:'  ありがとう  ' }, { id:'x', text:'' }, null, { id:'y', text:5 }] }) }], value:'' } });
+check('よみこむと ことばが戻る(空・かたちの違うものは捨てる・番号はつけ直す)', wordsOf() === 'ありがとう' && JSON.parse(lsData['kaiwa.words.v1'])[0].id === 'w1');
+fire(created['bk-file'], 'change', { target:{ files:[{ _text: JSON.stringify({ app:'kaiwa_hojo_note', ver:2, prefs:{ lang:'ja' }, dict:[] }) }], value:'' } });
+check('ことばの入っていない(前の版の)ファイルは いまの ことばを残す', wordsOf() === 'ありがとう');
+tapEl(byId('btn-lock'));
+tapEl(created['nav-kana']);
+check('本人使用モードでは とうろく欄も けすボタンも出ない', byClass(created['scr-kana'], 'kana-word-input').length === 0 && byClass(created['scr-kana'], 'kana-word-del').length === 0);
+check('とうろくした ことばは出る', byClass(created['scr-kana'], 'kana-word').length === 1);
+tapEl(byClass(created['scr-kana'], 'kana-word')[0]);
+check('1タップで 上の見せる欄に ことばが出る', byClass(created['scr-kana'], 'kana-strip')[0].textContent === 'ありがとう');
+tapEl(btnByText(created['scr-kana'], 'ぜんぶ けす'));
+tapEl(findAll(created['scr-kana'], n => n.tagName === 'BUTTON' && n.textContent === 'あ')[0]);
+tapEl(byClass(created['scr-kana'], 'kana-word')[0]);
+tapEl(btnByText(created['scr-kana'], 'もどす'));
+check('ならべていた字が あったら「もどす」で戻せる', byClass(created['scr-kana'], 'kana-strip')[0].textContent === 'あ');
+lsData['kaiwa.words.v1'] = '[]';
+tapEl(created['nav-health']); tapEl(created['nav-kana']);
+check('本人使用モードで 1つも無いときは 欄ごと出ない', byClass(created['scr-kana'], 'kana-words').length === 0);
+tapEl(created['hd-title']);
+
 /* ---- [v0.1.4] ステータスバー/ナビゲーションバーに食い込まない(セーフエリア対応) ----
    targetSdk36(Android15+)はエッジtoエッジ強制で、WebViewが端末のステータスバーの下・
    ナビゲーションバーの下まで描かれる。固定pxのままだとヘッダーが時計と重なり、
@@ -288,9 +441,29 @@ check('しゃしんの全画面オーバーレイが上下ともセーフエリ�
 /* 版数の取り違え防止(build.gradle=正・アプリ内表示の据え置きを機械で弾く。
    Web版のフォルダには android/ が無いのでその時だけ飛ばす) */
 const gradlePath = __dirname + '/android/app/build.gradle';
+/* AAB を作る前の同期チェック(2026-11-11): 本体ルート・www/・android の assets・build.gradle の版が同じか。
+   同期し忘れ(build-www.js と npx cap copy)があると、古い画面の AAB ができる。www/ と assets は Git に入らない(各自で作る)ので、
+   無いとき(Web版のフォルダ・まだ作っていないとき)は飛ばす */
+{
+  const rootVer = (fs.readFileSync(__dirname + '/app.js', 'utf8').match(/const VER = '([^']+)'/) || [])[1];
+  const rootCache = (fs.readFileSync(__dirname + '/sw.js', 'utf8').match(/const CACHE = '([^']+)'/) || [])[1];
+  const copies = [['www', 'www'], ['android assets', 'android/app/src/main/assets/public']];
+  for(const [label, dir] of copies){
+    const a = __dirname + '/' + dir + '/app.js', w = __dirname + '/' + dir + '/sw.js';
+    if(fs.existsSync(a)){
+      const v = (fs.readFileSync(a, 'utf8').match(/const VER = '([^']+)'/) || [])[1];
+      check('同期: ' + label + ' の app.js の VER が本体と同じ(' + rootVer + ')。違うときは node build-www.js → npx cap copy android', v === rootVer);
+    }
+    if(fs.existsSync(w)){
+      const c = (fs.readFileSync(w, 'utf8').match(/const CACHE = '([^']+)'/) || [])[1];
+      check('同期: ' + label + ' の sw.js のキャッシュ名が本体と同じ(' + rootCache + ')', c === rootCache);
+    }
+  }
+}
 if(fs.existsSync(gradlePath)){
   const gradleVer = (fs.readFileSync(gradlePath, 'utf8').match(/versionName\s+"([^"]+)"/) || [])[1];
   check('build.gradle の versionName とせっていの版表示が一致', byId('about-ver').textContent === 'v' + gradleVer);
+  check('同期: build.gradle の versionName が本体の VER と同じ', gradleVer === (fs.readFileSync(__dirname + '/app.js', 'utf8').match(/const VER = '([^']+)'/) || [])[1]);
   check('package.json の version も一致',
     JSON.parse(fs.readFileSync(__dirname + '/package.json', 'utf8')).version === gradleVer);
 }
