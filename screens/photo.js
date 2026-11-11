@@ -169,7 +169,7 @@
       '#scr-photo .photo-btn{min-height:56px;min-width:96px;padding:0 20px;display:flex;align-items:center;justify-content:center;gap:8px;',
       'border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;',
       'font-family:inherit;font-size:1.02em;font-weight:700;}',
-      '#scr-photo .photo-btn.primary{border-color:var(--brand);background:var(--brand);color:#fff;}',
+      '#scr-photo .photo-btn.primary{border-color:var(--brand);background:var(--brand);color:var(--on-brand);}',
       '#scr-photo .photo-btn.danger{border-color:#cc3b30;color:#cc3b30;}',
       'body[data-theme="dark"] #scr-photo .photo-btn.danger{border-color:#ef9a9a;color:#ef9a9a;}',
       '#scr-photo .photo-ico{font-size:1.2em;line-height:1;}',
